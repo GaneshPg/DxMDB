@@ -1,0 +1,68 @@
+﻿@using DxMDB.Models;
+@model IEnumerable<DxMDB.Models.Movie>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <script>
+        $('form').submit(function () {
+            // Modify the following to use you jquery-ui-dialog, but for testing purposes
+            if (!confirm("Are you sure you want to delete?") { 
+                return false; // cancel the submit if the user clicked the Cancel button
+            }
+        });
+    </script>
+</head>
+<body>
+    <p>@Html.ActionLink("Add Movie","Create")</p>
+    <div>
+        <table cellspacing="20">
+            <tr>
+                <th>Movie Name</th>
+                <th>Year of Release</th>
+                <th>Actors</th>
+                <th>Producer</th>
+            </tr>
+
+            @foreach (Movie movie in Model)
+            {
+            <tr>
+                <td>@Html.ActionLink(movie.Name, "Details", new { id = movie.Id })</td>
+                <td>@movie.Yor</td>
+                @{
+        string actors = "";
+        foreach (MovieActor actor in movie.MovieActors)
+        {
+            if (String.IsNullOrEmpty(actors))
+            {
+                actors = actor.Actor.Name;
+            }
+            else
+            {
+                actors += ", " + actor.Actor.Name;
+            }
+        }
+                }
+
+                <td>@actors</td>
+                <td>@movie.Producer.Name</td>
+                <td>@Html.ActionLink("Edit", "Edit", new { id = movie.Id })</td>
+                <td>
+                    @using (Html.BeginForm("delete", "HomeController", new { id = movie.Id }, FormMethod.Post)){
+                        @Html.AntiForgeryToken()
+                        <input type="submit" value="delete" />
+                    }
+                 </td>
+            </tr>
+        }
+        </table>
+    </div>
+</body>
+</html>
