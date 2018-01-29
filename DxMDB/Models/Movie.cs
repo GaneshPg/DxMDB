@@ -17,6 +17,11 @@ namespace DxMDB.Models
         [Required]
         public int ProducerId { get; set; }
         public virtual Producer Producer { get; set; }
-        public virtual ICollection<MovieActor> MovieActors { get; set; }
+        public virtual ICollection<Actor> Actors { get; set; }
+
+        public Movie()
+        {
+            Actors = new HashSet<Actor>();
+        }
     }
 }

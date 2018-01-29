@@ -16,6 +16,11 @@ namespace DxMDB.Models
         [Required]
         public DateTime DOB { get; set; }
         public string Bio { get; set; }
-        public virtual ICollection<MovieActor> MovieActors { get; set; }
+        public virtual ICollection<Movie> Movies { get; set; }
+
+        public Actor()
+        {
+            Movies = new HashSet<Movie>();
+        }
     }
 }

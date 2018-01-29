@@ -7,13 +7,13 @@ namespace DxMDB.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class ChangeTypeForGender : IMigrationMetadata
+    public sealed partial class UpdateMovieActor : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(ChangeTypeForGender));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(UpdateMovieActor));
         
         string IMigrationMetadata.Id
         {
-            get { return "201801231058131_ChangeTypeForGender"; }
+            get { return "201801281426457_UpdateMovieActor"; }
         }
         
         string IMigrationMetadata.Source
