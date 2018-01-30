@@ -35,6 +35,24 @@ namespace DxMDB.Controllers
             return View(producer);
         }
 
+        public ActionResult ModalCreate()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ModalCreate([Bind(Include = "Id,Name,Gender,DOB,Bio")] Producer producer)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Producers.Add(producer);
+                db.SaveChanges();
+            }
+
+            return View(producer);
+        }
+
         // GET: Producers/Create
         public ActionResult Create()
         {

@@ -88,9 +88,9 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Create Actor</h4>
+                            <h4 class="modal-title">Create</h4>
                         </div>
-                        <div class="modal-body" id="actorModalBody">
+                        <div class="modal-body" id="ModalBody">
                             <div class="loader col-md-offset-4"></div>
                         </div>
                         <div class="modal-footer">
@@ -106,17 +106,18 @@
             <div class="col-md-10">
                 <select class="form-control" id="producer" width="500px" name="producer" data-placeholder="Select the producer">
                     @foreach (Producer p in ViewBag.Producers)
-                {
-                    if (ViewBag.ProducerSelected != null && ViewBag.ProducerSelected == p.Id)
-                    {
-                        <option value="@p.Id" selected>@p.Name</option>
-                }
-                else
-                {
-                    <option value="@p.Id">@p.Name</option>
-            }
-        }
+        {
+            if (ViewBag.ProducerSelected != null && ViewBag.ProducerSelected == p.Id)
+            {
+                <option value="@p.Id" selected>@p.Name</option>
+}
+else
+{
+            <option value="@p.Id">@p.Name</option>
+}
+}
                 </select>
+                <input id="CreateProducer" type="button" value="+" class="btn btn-default btnWidth" data-toggle="modal" data-target="#myModal" />
             </div>
         </div>
 
@@ -138,10 +139,19 @@
     $("#producer").chosen();
     $("#actor").chosen();
     $('#CreateActor').on('click', function () {
+        $('.modal-title').html("Create Actor");
         $.ajax({
             type: 'GET',
             url: '/Actors/ModalCreate',
-            success: function (data) { $("#actorModalBody").html(data); }
+            success: function (data) { $("#ModalBody").html(data); }
+        });
+    });
+    $('#CreateProducer').on('click', function () {
+        $('.modal-title').html("Create Producer");
+        $.ajax({
+            type: 'GET',
+            url: '/Producers/ModalCreate',
+            success: function (data) { $("#ModalBody").html(data); }
         });
     })
 </script>
