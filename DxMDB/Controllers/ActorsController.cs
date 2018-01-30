@@ -35,6 +35,24 @@ namespace DxMDB.Controllers
             return View(actor);
         }
 
+        public ActionResult ModalCreate()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ModalCreate([Bind(Include = "Id,Name,Gender,DOB,Bio")] Actor actor)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Actors.Add(actor);
+                db.SaveChanges();
+            }
+
+            return View(actor);
+        }
+
         // GET: Actors/Create
         public ActionResult Create()
         {

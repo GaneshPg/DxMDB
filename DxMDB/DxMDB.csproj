@@ -187,6 +187,10 @@
     <Compile Include="Migrations\201801281426457_UpdateMovieActor.Designer.cs">
       <DependentUpon>201801281426457_UpdateMovieActor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801300819527_AddedPosterURLToMovie.cs" />
+    <Compile Include="Migrations\201801300819527_AddedPosterURLToMovie.Designer.cs">
+      <DependentUpon>201801300819527_AddedPosterURLToMovie.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Actor.cs" />
     <Compile Include="Models\Movie.cs" />
@@ -218,6 +222,8 @@
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -252,6 +258,7 @@
     <Content Include="Views\Movies\Details.cshtml" />
     <Content Include="Views\Movies\Edit.cshtml" />
     <Content Include="Views\Movies\Index.cshtml" />
+    <Content Include="Views\Actors\ModalCreate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -272,6 +279,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201801281426457_UpdateMovieActor.resx">
       <DependentUpon>201801281426457_UpdateMovieActor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801300819527_AddedPosterURLToMovie.resx">
+      <DependentUpon>201801300819527_AddedPosterURLToMovie.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

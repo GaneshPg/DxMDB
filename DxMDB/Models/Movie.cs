@@ -12,7 +12,10 @@ namespace DxMDB.Models
         [Required]
         public string Name { get; set; }
         [Required]
+        [Display(Name="Year of Release")]
         public int Yor { get; set; }
+        [Display(Name="Poster URL")]
+        public string PosterUrl { get; set; }
         public string Plot { get; set; }
         [Required]
         public int ProducerId { get; set; }

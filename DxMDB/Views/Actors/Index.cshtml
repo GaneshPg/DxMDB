@@ -1,4 +1,5 @@
-﻿@model IEnumerable<DxMDB.Models.Actor>
+﻿@using DxMDB.Models
+@model IEnumerable<DxMDB.Models.Actor>
 
 @{
     Layout = "/Views/Shared/_Layout.cshtml";
@@ -26,13 +27,10 @@
             <th>
                 @Html.DisplayNameFor(model => model.DOB)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Bio)
-            </th>
             <th></th>
         </tr>
     
-    @foreach (var item in Model) {
+    @foreach (Actor item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -41,10 +39,7 @@
                 @Html.DisplayFor(modelItem => item.Gender)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DOB)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Bio)
+                @item.DOB.ToShortDateString()
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |

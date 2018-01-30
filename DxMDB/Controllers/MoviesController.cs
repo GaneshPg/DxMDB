@@ -37,6 +37,21 @@ namespace DxMDB.Controllers
             {
                 return HttpNotFound();
             }
+            string actors = "";
+            foreach (Actor actor in movie.Actors)
+            {
+                if (String.IsNullOrEmpty(actors))
+                {
+                    actors = actor.Name;
+                }
+                else
+                {
+                    actors += ", " + actor.Name;
+                }
+            }
+
+            ViewBag.actors = actors;
+
             return View(movie);
         }
 
@@ -53,7 +68,6 @@ namespace DxMDB.Controllers
         {
             Movie m = db.Movies.Find(movieId);
             Actor a = db.Actors.Find(actorId);
-            db.Movies.Attach(m);
             db.Actors.Attach(a);
             m.Actors.Add(a);
             db.SaveChanges();
@@ -62,11 +76,7 @@ namespace DxMDB.Controllers
         public void DeleteAllMovieActors(int movieId)
         {
             Movie m = db.Movies.Find(movieId);
-
-            foreach (Actor a in m.Actors)
-                m.Actors.Remove(a);
-
-            db.SaveChanges();
+            m.Actors.Clear();
         }
 
         // GET: Movies/Create
@@ -82,7 +92,7 @@ namespace DxMDB.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Yor,Plot")] Movie movie)
+        public ActionResult Create([Bind(Include = "Id,Name,Yor,PosterUrl,Plot")] Movie movie)
         {
             movie.ProducerId = int.Parse(Request["producer"]);
             List<int> actorsSelected = new List<int>();
@@ -98,7 +108,9 @@ namespace DxMDB.Controllers
                     if (currentId == actorsSelected.ElementAt(0))
                         AddNewMovieActor(movie, currentId);
                     else
+                    {
                         AddMovieActor(movie.Id, currentId);
+                    }
                 }
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -138,9 +150,8 @@ namespace DxMDB.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Yor,Plot,ProducerId")] Movie movie)
+        public ActionResult Edit([Bind(Include = "Id,Name,Yor,PosterUrl,Plot,ProducerId")] Movie movie)
         {
-            movie.ProducerId = int.Parse(Request["producer"]);
             List<int> actorsSelected = new List<int>();
             string[] actorIds = Request["actor"].Split(',');
             foreach (string actorId in actorIds)
@@ -150,10 +161,19 @@ namespace DxMDB.Controllers
             }
             if (ModelState.IsValid)
             {
-                db.Entry(movie).State = EntityState.Modified;
-                DeleteAllMovieActors(movie.Id);
-                foreach (int currentId in actorsSelected)
-                    AddMovieActor(movie.Id, currentId);
+                Movie m = db.Movies.Find(movie.Id);
+                m.ProducerId = int.Parse(Request["producer"]);
+                m.Actors.Clear();
+                m.Name = movie.Name;
+                m.Plot = movie.Plot;
+                m.PosterUrl = movie.PosterUrl;
+                m.Producer = movie.Producer;
+                foreach (int actorId in actorsSelected)
+                {
+                    Actor a = db.Actors.Find(actorId);
+                    m.Actors.Add(a);
+                }
+                db.Entry(m).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
