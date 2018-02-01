@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -101,7 +102,7 @@ namespace DxMDB.Controllers
             {
                 actorsSelected.Add(int.Parse(actorId));
             }
-                if (ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 foreach (int currentId in actorsSelected)
                 {
@@ -110,6 +111,15 @@ namespace DxMDB.Controllers
                     else
                     {
                         AddMovieActor(movie.Id, currentId);
+                    }
+                }
+                foreach (string file in Request.Files)
+                {
+                    var postedFile = Request.Files[file];
+                    if (!string.IsNullOrEmpty(postedFile.FileName))
+                    {
+                        postedFile.SaveAs(Server.MapPath("~/Images/") + movie.Id.ToString() + Path.GetFileName(postedFile.FileName));
+                        movie.PosterFilePath = "~/Images/" + movie.Id.ToString() + Path.GetFileName(postedFile.FileName);
                     }
                 }
                 db.SaveChanges();
@@ -138,6 +148,7 @@ namespace DxMDB.Controllers
             List<int> actorsSelected = new List<int>();
             foreach (Actor a in movie.Actors)
                 actorsSelected.Add(a.Id);
+
             ViewBag.ProducerSelected = movie.ProducerId;
             ViewBag.ActorsSelected = actorsSelected;
             ViewBag.Producers = db.Producers;
@@ -150,7 +161,7 @@ namespace DxMDB.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Yor,PosterUrl,Plot,ProducerId")] Movie movie)
+        public ActionResult Edit([Bind(Include = "Id,Name,Yor,Plot,ProducerId")] Movie movie)
         {
             List<int> actorsSelected = new List<int>();
             string[] actorIds = Request["actor"].Split(',');
@@ -166,8 +177,21 @@ namespace DxMDB.Controllers
                 m.Actors.Clear();
                 m.Name = movie.Name;
                 m.Plot = movie.Plot;
-                m.PosterUrl = movie.PosterUrl;
                 m.Producer = movie.Producer;
+                foreach (string file in Request.Files)
+                {
+                    var postedFile = Request.Files[file];
+                    if (!string.IsNullOrEmpty(postedFile.FileName))
+                    {
+                        string fullPath = Request.MapPath(m.PosterFilePath);
+                        if (System.IO.File.Exists(fullPath))
+                        {
+                            System.IO.File.Delete(fullPath);
+                        }
+                        postedFile.SaveAs(Server.MapPath("~/Images/") + m.Id.ToString() + Path.GetFileName(postedFile.FileName));
+                        m.PosterFilePath = "~/Images/" + m.Id.ToString() + Path.GetFileName(postedFile.FileName);
+                    }
+                }
                 foreach (int actorId in actorsSelected)
                 {
                     Actor a = db.Actors.Find(actorId);

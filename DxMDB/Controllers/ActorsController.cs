@@ -37,12 +37,13 @@ namespace DxMDB.Controllers
 
         public ActionResult ModalCreate()
         {
+            string id = (Request["Movie_Name"]);
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ModalCreate([Bind(Include = "Id,Name,Gender,DOB,Bio")] Actor actor)
+        public ActionResult ModalUpdateDB([Bind(Include = "Id,Name,Gender,DOB,Bio")] Actor actor)
         {
             if (ModelState.IsValid)
             {

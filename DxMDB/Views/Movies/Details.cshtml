@@ -15,8 +15,10 @@
     <div>
         <h4>Movie</h4>
         <hr />
-
-        <img src="@Model.PosterUrl" />
+        @if(!string.IsNullOrEmpty(Model.PosterFilePath))
+        {
+            <img src="@Url.Content(Model.PosterFilePath)" />
+        }
 
         <dl class="dl-horizontal">
 

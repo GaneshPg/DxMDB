@@ -191,6 +191,14 @@
     <Compile Include="Migrations\201801300819527_AddedPosterURLToMovie.Designer.cs">
       <DependentUpon>201801300819527_AddedPosterURLToMovie.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801310945512_AddedHasPosterFileProperty.cs" />
+    <Compile Include="Migrations\201801310945512_AddedHasPosterFileProperty.Designer.cs">
+      <DependentUpon>201801310945512_AddedHasPosterFileProperty.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802010356455_RemovedAllExceptPosterFilePath.cs" />
+    <Compile Include="Migrations\201802010356455_RemovedAllExceptPosterFilePath.Designer.cs">
+      <DependentUpon>201802010356455_RemovedAllExceptPosterFilePath.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Actor.cs" />
     <Compile Include="Models\Movie.cs" />
@@ -263,6 +271,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Images\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -283,6 +292,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801300819527_AddedPosterURLToMovie.resx">
       <DependentUpon>201801300819527_AddedPosterURLToMovie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801310945512_AddedHasPosterFileProperty.resx">
+      <DependentUpon>201801310945512_AddedHasPosterFileProperty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802010356455_RemovedAllExceptPosterFilePath.resx">
+      <DependentUpon>201802010356455_RemovedAllExceptPosterFilePath.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
