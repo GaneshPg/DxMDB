@@ -13,7 +13,7 @@ namespace DxMDB.Controllers
 {
     public class MoviesController : Controller
     {
-        public MovieDBContext db = new MovieDBContext();
+        private MovieDBContext db = new MovieDBContext();
 
         // GET: Movies
         public ActionResult Index(int? id)
@@ -96,12 +96,18 @@ namespace DxMDB.Controllers
         public ActionResult Create([Bind(Include = "Id,Name,Yor,PosterUrl,Plot")] Movie movie)
         {
             movie.ProducerId = int.Parse(Request["producer"]);
+            string[] actorIds;
             List<int> actorsSelected = new List<int>();
-            string[] actorIds = Request["actor"].Split(',');
-            foreach (string actorId in actorIds)
+            if (!string.IsNullOrEmpty(Request["actor"]))
             {
-                actorsSelected.Add(int.Parse(actorId));
+                actorIds = Request["actor"].Split(',');
+                foreach (string actorId in actorIds)
+                {
+                    actorsSelected.Add(int.Parse(actorId));
+                }
             }
+            else
+                actorIds = null;
             if (ModelState.IsValid)
             {
                 foreach (int currentId in actorsSelected)
@@ -151,8 +157,8 @@ namespace DxMDB.Controllers
 
             ViewBag.ProducerSelected = movie.ProducerId;
             ViewBag.ActorsSelected = actorsSelected;
-            ViewBag.Producers = db.Producers;
-            ViewBag.Actors = db.Actors;
+            ViewBag.Producers = db.Producers.ToList();
+            ViewBag.Actors = db.Actors.ToList();
             return View(movie);
         }
 
@@ -203,8 +209,8 @@ namespace DxMDB.Controllers
             }
             ViewBag.ProducerSelected = movie.ProducerId;
             ViewBag.ActorsSelected = actorsSelected;
-            ViewBag.Producers = db.Producers;
-            ViewBag.Actors = db.Actors;
+            ViewBag.Producers = db.Producers.ToList();
+            ViewBag.Actors = db.Actors.ToList();
             return View(movie);
         }
 
@@ -229,6 +235,14 @@ namespace DxMDB.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Movie movie = db.Movies.Find(id);
+            if (!string.IsNullOrEmpty(movie.PosterFilePath))
+            {
+                string fullPath = Request.MapPath(movie.PosterFilePath);
+                if (System.IO.File.Exists(fullPath))
+                {
+                    System.IO.File.Delete(fullPath);
+                }
+            }
             db.Movies.Remove(movie);
             db.SaveChanges();
             return RedirectToAction("Index");

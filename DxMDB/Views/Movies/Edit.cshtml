@@ -12,8 +12,8 @@
     <meta name="viewport" content="width=device-width" />
     <title>Edit</title>
     <script src="~/Scripts/jquery-1.10.2.js"></script>
-    <script src="~/Scripts/chosen.jquery.js"></script>
-    <link href="~/Content/chosen.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 </head>
 <body>
     @using (Html.BeginForm("Edit", "Movies", FormMethod.Post, new { enctype = "multipart/form-data" }))
@@ -58,10 +58,33 @@
                 </div>
             </div>
 
+            <div class="container">
+
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Create</h4>
+                            </div>
+                            <div class="modal-body" id="ModalBody">
+                                <div class="loader col-md-offset-4"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label class="control-label col-md-2">Actors</label>
                 <div class="col-md-10">
-                    <select class="form-control" id="actor" width="500px" name="actor" data-placeholder="Select the actors" multiple>
+                    <select class="form-control" id="actor" width="500px" name="actor" data-placeholder="Select actors" multiple>
                         @foreach (Actor a in ViewBag.Actors)
                         {
                             if (ViewBag.ActorsSelected != null && ((List<int>)ViewBag.ActorsSelected).Contains(a.Id))
@@ -74,13 +97,14 @@
                             }
                         }
                     </select>
+                    <input id="CreateActor" type="button" value="+" class="btn btn-default btnWidth" data-toggle="modal" data-target="#myModal" />
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="control-label col-md-2">Producer</label>
                 <div class="col-md-10">
-                    <select class="form-control" id="producer" width="500px" name="producer" data-placeholder="Select the producer">
+                    <select class="form-control" id="producer" width="500px" name="producer" data-placeholder="Select producer">
                         @foreach (Producer p in ViewBag.Producers)
                         {
                             if (ViewBag.ProducerSelected != null && ViewBag.ProducerSelected == p.Id)
@@ -93,6 +117,7 @@
                             }
                         }
                     </select>
+                    <input id="CreateProducer" type="button" value="+" class="btn btn-default btnWidth" data-toggle="modal" data-target="#myModal" />
                 </div>
             </div>
 
@@ -111,10 +136,70 @@
 </html>
 
 <script>
-    $("#producer").chosen();
-    $("#actor").chosen();
     function resetImage(e) {
         e.wrap('<form>').closest('form').get(0).reset();
         e.unwrap();
     }
+    $("#producer").select2();
+    $("#actor").select2();
+    $('#CreateActor').on('click', function () {
+        $('.modal-title').html("Create Actor");
+        $.ajax({
+            type: 'GET',
+            url: '/Actors/ModalCreate',
+            success: function (data) {
+                $("#ModalBody").html(data);
+                $('#AddActor').on('click', function () {
+                    var dataArray = $("#actorInput").serializeArray(), actor = {};
+
+                    $(dataArray).each(function (i, field) {
+                        actor[field.name] = field.value;
+                    });
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Actors/ModalUpdateDB',
+                        dataType: 'json',
+                        data: actor,
+                        success: function (data) {
+                            var key = data['Id'];
+                            var value = data['Name'];
+                            var newState = new Option(value, key, true, true);
+                            $("#actor").append(newState).trigger('change');
+                            $(".modal:visible").modal('toggle');
+                        }
+                    });
+                });
+            }
+        });
+    });
+    $('#CreateProducer').on('click', function () {
+        $('.modal-title').html("Create Producer");
+        $.ajax({
+            type: 'GET',
+            url: '/Producers/ModalCreate',
+            success: function (data) {
+                $("#ModalBody").html(data);
+                $('#AddProducer').on('click', function () {
+                    var dataArray = $("#producerInput").serializeArray(), producer = {};
+
+                    $(dataArray).each(function (i, field) {
+                        producer[field.name] = field.value;
+                    });
+                    $.ajax({
+                        type: 'POST',
+                        url: '/Producers/ModalUpdateDB',
+                        dataType: 'json',
+                        data: producer,
+                        success: function (data) {
+                            var key = data['Id'];
+                            var value = data['Name'];
+                            var newState = new Option(value, key, true, true);
+                            $("#producer").append(newState).trigger('change');
+                            $(".modal:visible").modal('toggle');
+                        }
+                    });
+                });
+            }
+        });
+    });
 </script>

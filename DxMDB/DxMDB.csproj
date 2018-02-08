@@ -199,6 +199,10 @@
     <Compile Include="Migrations\201802010356455_RemovedAllExceptPosterFilePath.Designer.cs">
       <DependentUpon>201802010356455_RemovedAllExceptPosterFilePath.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802050929599_RemoveRequiredForGender.cs" />
+    <Compile Include="Migrations\201802050929599_RemoveRequiredForGender.Designer.cs">
+      <DependentUpon>201802050929599_RemoveRequiredForGender.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Actor.cs" />
     <Compile Include="Models\Movie.cs" />
@@ -298,6 +302,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802010356455_RemovedAllExceptPosterFilePath.resx">
       <DependentUpon>201802010356455_RemovedAllExceptPosterFilePath.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802050929599_RemoveRequiredForGender.resx">
+      <DependentUpon>201802050929599_RemoveRequiredForGender.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

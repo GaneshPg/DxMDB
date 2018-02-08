@@ -2,17 +2,53 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DxMDB.Models;
+using Newtonsoft.Json.Linq;
 
 namespace DxMDB.Controllers
 {
     public class ActorsController : Controller
     {
         private MovieDBContext db = new MovieDBContext();
+
+        static string RenderViewToString(ControllerContext context,
+                                    string viewPath,
+                                    object model = null,
+                                    bool partial = false)
+        {
+            // first find the ViewEngine for this view
+            ViewEngineResult viewEngineResult = null;
+            if (partial)
+                viewEngineResult = ViewEngines.Engines.FindPartialView(context, viewPath);
+            else
+                viewEngineResult = ViewEngines.Engines.FindView(context, viewPath, null);
+
+            if (viewEngineResult == null)
+                throw new FileNotFoundException("View cannot be found.");
+
+            // get the view and attach the model to view data
+            var view = viewEngineResult.View;
+            context.Controller.ViewData.Model = model;
+
+            string result = null;
+
+            using (var sw = new StringWriter())
+            {
+                var ctx = new ViewContext(context, view,
+                                            context.Controller.ViewData,
+                                            context.Controller.TempData,
+                                            sw);
+                view.Render(ctx, sw);
+                result = sw.ToString();
+            }
+
+            return result;
+        }
 
         // GET: Actors
         public ActionResult Index()
@@ -37,21 +73,37 @@ namespace DxMDB.Controllers
 
         public ActionResult ModalCreate()
         {
-            string id = (Request["Movie_Name"]);
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ModalUpdateDB([Bind(Include = "Id,Name,Gender,DOB,Bio")] Actor actor)
+        public ActionResult ModalUpdateDB(string Name, string Gender, string DOB, string Bio)
         {
-            if (ModelState.IsValid)
+            Actor actor;
+            try
+            {
+                actor = new Actor { Name = Name, Gender = Gender, DOB = DateTime.Parse(DOB), Bio = Bio };
+            }
+            catch (Exception e)
+            {
+                actor = new Actor { Name = Name, Gender = Gender, Bio = Bio };
+            }
+            JObject jp = JObject.FromObject(actor);
+            if (TryValidateModel(actor))
             {
                 db.Actors.Add(actor);
                 db.SaveChanges();
+                jp.Add("error", "false");
+                return Content(jp.ToString(), "application/json");
             }
 
-            return View(actor);
+            jp.Add("error", "true");
+            var view = RenderViewToString(this.ControllerContext, "~/Views/Actors/ModalCreate.cshtml", actor);
+
+            jp.Add("view", view);
+            return Content(jp.ToString(), "application/json");
+
         }
 
         // GET: Actors/Create

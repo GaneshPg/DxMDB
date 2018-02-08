@@ -12,9 +12,9 @@
     <meta name="viewport" content="width=device-width" />
     <title>Create</title>
     <script src="~/Scripts/jquery-1.10.2.js"></script>
-    <script src="~/Scripts/chosen.jquery.js"></script>
-    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
-    <link href="~/Content/chosen.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 
 </head>
 <body>
@@ -57,26 +57,6 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                <label class="control-label col-md-2">Actors</label>
-                <div class="col-md-10">
-                    <select class="form-control" id="actor" width="500px" name="actor" data-placeholder="Select the actors" multiple>
-                        @foreach (Actor a in ViewBag.Actors)
-                        {
-                            if (ViewBag.ActorsSelected != null && ((List<int>)ViewBag.ActorsSelected).Contains(a.Id))
-                            {
-                                <option value="@a.Id" selected>@a.Name</option>
-                            }
-                            else
-                            {
-                                <option value="@a.Id">@a.Name</option>
-                            }
-                        }
-                    </select>
-                    <input id="CreateActor" type="button" value="+" class="btn btn-default btnWidth" data-toggle="modal" data-target="#myModal" />
-                </div>
-            </div>
-
             <div class="container">
 
                 <!-- Modal -->
@@ -101,9 +81,29 @@
             </div>
 
             <div class="form-group">
+                <label class="control-label col-md-2">Actors</label>
+                <div class="col-md-10">
+                    <select class="form-control" id="actor" width="500px" name="actor" data-placeholder="Select actors" multiple>
+                        @foreach (Actor a in ViewBag.Actors)
+                        {
+                            if (ViewBag.ActorsSelected != null && ((List<int>)ViewBag.ActorsSelected).Contains(a.Id))
+                            {
+                                <option value="@a.Id" selected>@a.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@a.Id">@a.Name</option>
+                            }
+                        }
+                    </select>
+                    <input id="CreateActor" type="button" value="+" class="btn btn-default btnWidth" data-toggle="modal" data-target="#myModal" />
+                </div>
+            </div>
+
+            <div class="form-group">
                 <label class="control-label col-md-2">Producer</label>
                 <div class="col-md-10">
-                    <select class="form-control" id="producer" width="500px" name="producer" data-placeholder="Select the producer">
+                    <select class="form-control" id="producer" width="500px" name="producer" data-placeholder="Selectproducer">
                         @foreach (Producer p in ViewBag.Producers)
                         {
                             if (ViewBag.ProducerSelected != null && ViewBag.ProducerSelected == p.Id)
@@ -135,24 +135,89 @@
 </html>
 
 <script>
-    $("#producer").chosen();
-    $("#actor").chosen();
+    $("#producer").select2();
+    $("#actor").select2();
+    function ActorAjaxCall() {
+        var dataArray = $("#actorInput").serializeArray(), actor = {};
+        $(dataArray).each(function (i, field) {
+            actor[field.name] = field.value;
+        });
+        $.ajax({
+            type: 'POST',
+            url: '/Actors/ModalUpdateDB',
+            dataType: 'json',
+            data: actor,
+            success: function (data) {
+                var errorflag = data['error'];
+                if (errorflag == "true") {
+                    //var formtag = '<form id="actorInput">';
+                    //$("#ModalBody").html(formtag);
+                    $('#ModalBody').html(data['view']);
+                    //$('#ModalBody').append('</form>');
+                    $('#AddActor').on('click', ActorAjaxCall);
+                }
+                else {
+                    key = data['Id'];
+                    value = data['Name'];
+                    var newState = new Option(value, key, true, true);
+                    $("#actor").append(newState).trigger('change');
+                    $(".modal:visible").modal('toggle');
+                }
+            }
+        });
+    }
     $('#CreateActor').on('click', function () {
         $('.modal-title').html("Create Actor");
         $.ajax({
             type: 'GET',
             url: '/Actors/ModalCreate',
-            success: function (data) { $("#ModalBody").html(data); }
+            success: function (data) {
+                //var formtag = '<form id="actorInput">';
+                //$("#ModalBody").html(formtag);
+                $('#ModalBody').html(data);
+                //$('#ModalBody').append('</form>');
+                $('#AddActor').on('click', ActorAjaxCall);
+            }
         });
     });
+
+    function ProducerAjaxCall() {
+        var dataArray = $("#producerInput").serializeArray(), producer = {};
+
+        $(dataArray).each(function (i, field) {
+            producer[field.name] = field.value;
+        });
+        $.ajax({
+            type: 'POST',
+            url: '/Producers/ProducerUpdateDB',
+            dataType: 'json',
+            data: producer,
+            success: function (data) {
+                var error = data['error'];
+                if (error == "true") {
+                    $("#ModalBody").html(data['view']);
+                    $('#AddProducer').on('click', ProducerAjaxCall);
+                }
+                else {
+                    key = data['Id'];
+                    value = data['Name'];
+                    var newState = new Option(value, key, true, true);
+                    $("#producer").append(newState).trigger('change');
+                    $(".modal:visible").modal('toggle');
+                }
+            }
+        });
+    }
+
     $('#CreateProducer').on('click', function () {
-        var name = document.getElementById("Movie_Name").value;
         $('.modal-title').html("Create Producer");
         $.ajax({
             type: 'GET',
             url: '/Producers/ModalCreate',
-            data: "{name : }",
-            success: function (data) { $("#ModalBody").html(data); }
+            success: function (data) {
+                $("#ModalBody").html(data);
+                $('#AddProducer').on('click', ProducerAjaxCall);
+            }
         });
     });
 </script>
