@@ -203,10 +203,15 @@
     <Compile Include="Migrations\201802050929599_RemoveRequiredForGender.Designer.cs">
       <DependentUpon>201802050929599_RemoveRequiredForGender.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802081036106_AddNameValidation.cs" />
+    <Compile Include="Migrations\201802081036106_AddNameValidation.Designer.cs">
+      <DependentUpon>201802081036106_AddNameValidation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Actor.cs" />
     <Compile Include="Models\Movie.cs" />
     <Compile Include="Models\MovieDBContext.cs" />
+    <Compile Include="Models\NameFormatValidation.cs" />
     <Compile Include="Models\Producer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -305,6 +310,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802050929599_RemoveRequiredForGender.resx">
       <DependentUpon>201802050929599_RemoveRequiredForGender.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802081036106_AddNameValidation.resx">
+      <DependentUpon>201802081036106_AddNameValidation.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

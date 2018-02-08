@@ -77,7 +77,6 @@ namespace DxMDB.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult ModalUpdateDB(string Name, string Gender, string DOB, string Bio)
         {
             Actor actor;
@@ -123,6 +122,7 @@ namespace DxMDB.Controllers
             {
                 db.Actors.Add(actor);
                 db.SaveChanges();
+                TempData["Notification"] = actor.Name + " has been added succesfully to the actors database!";
                 return RedirectToAction("Index");
             }
 
@@ -155,6 +155,7 @@ namespace DxMDB.Controllers
             {
                 db.Entry(actor).State = EntityState.Modified;
                 db.SaveChanges();
+                TempData["Notification"] = actor.Name + " has been edited succesfully!";
                 return RedirectToAction("Index");
             }
             return View(actor);
@@ -183,6 +184,7 @@ namespace DxMDB.Controllers
             Actor actor = db.Actors.Find(id);
             db.Actors.Remove(actor);
             db.SaveChanges();
+            TempData["Notification"] = actor.Name + " has been deleted from the actors database!";
             return RedirectToAction("Index");
         }
 

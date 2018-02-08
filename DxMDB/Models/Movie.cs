@@ -21,6 +21,7 @@ namespace DxMDB.Models
         [Display(Name="Poster Image")]
         public string PosterFilePath { get; set; }
 
+        [DataType(DataType.MultilineText)]
         public string Plot { get; set; }
 
         [Required]

@@ -13,6 +13,32 @@
     <title>Index</title>
 </head>
 <body>
+    @if (TempData["Notification"] != null)
+    {
+        <div class="alert alert-success">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>@TempData["Notification"]</strong>
+        </div>
+    }
+    <div class="container">
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Delete Confirmation</h4>
+                    </div>
+                    <div class="modal-body" id="ModalBody">
+                        <div class="loader col-md-offset-4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <p>
         @Html.ActionLink("Create New", "Create")
     </p>
@@ -29,26 +55,43 @@
             </th>
             <th></th>
         </tr>
-    
-    @foreach (Actor item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Gender)
-            </td>
-            <td>
-                @item.DOB.ToShortDateString()
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-            </td>
-        </tr>
-    }
-    
+
+        @foreach (Actor item in Model)
+        {
+
+            string id = item.Id.ToString();
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gender)
+                </td>
+                <td>
+                    @item.DOB.ToShortDateString()
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    <a id=@id href="#@id" onclick="javascript:deletePopUp(id)" data-toggle="modal" data-target="#myModal">Delete</a>
+                </td>
+            </tr>
+        }
+
     </table>
 </body>
 </html>
+
+<script>
+    function deletePopUp(id) {
+        var urlString = '/Actors/Delete/';
+        urlString = urlString.concat(id);
+        $.ajax({
+            type: 'GET',
+            url: urlString,
+            success: function (data) { $("#ModalBody").html(data); }
+        });
+        //$('#link').html(name);
+    }
+</script>

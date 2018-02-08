@@ -122,6 +122,7 @@ namespace DxMDB.Controllers
             {
                 db.Producers.Add(producer);
                 db.SaveChanges();
+                TempData["Notification"] = producer.Name + " has been added succesfully to the producers database!";
                 return RedirectToAction("Index");
             }
 
@@ -154,6 +155,7 @@ namespace DxMDB.Controllers
             {
                 db.Entry(producer).State = EntityState.Modified;
                 db.SaveChanges();
+                TempData["Notification"] = producer.Name + " has been edited succesfully!";
                 return RedirectToAction("Index");
             }
             return View(producer);
@@ -182,6 +184,7 @@ namespace DxMDB.Controllers
             Producer producer = db.Producers.Find(id);
             db.Producers.Remove(producer);
             db.SaveChanges();
+            TempData["Notification"] = producer.Name + " has been deleted from the producers database!";
             return RedirectToAction("Index");
         }
 

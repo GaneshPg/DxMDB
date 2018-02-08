@@ -12,120 +12,122 @@
     <meta name="viewport" content="width=device-width" />
     <title>Create</title>
     <script src="~/Scripts/jquery-1.10.2.js"></script>
-    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>-->
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 
 </head>
 <body>
+
+    <div class="container">
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Create</h4>
+                    </div>
+                    <div class="modal-body" id="ModalBody">
+                        <div class="loader col-md-offset-4"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @using (Html.BeginForm("Create", "Movies", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.AntiForgeryToken()
 
-        <div class="form-horizontal">
-            <h4>Movie</h4>
-            <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group">
-                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Yor, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Yor, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Yor, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label col-md-2">Poster Image from file : </label>
-                <div class="col-md-10">
-                    <input type="file" id="posterFile" name="posterFile" accept="image/*" />
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Plot, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Plot, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Plot, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="container">
-
-                <!-- Modal -->
-                <div class="modal fade" id="myModal" role="dialog">
-                    <div class="modal-dialog">
-
-                        <!-- Modal content-->
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Create</h4>
-                            </div>
-                            <div class="modal-body" id="ModalBody">
-                                <div class="loader col-md-offset-4"></div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label col-md-2">Actors</label>
-                <div class="col-md-10">
-                    <select class="form-control" id="actor" width="500px" name="actor" data-placeholder="Select actors" multiple>
-                        @foreach (Actor a in ViewBag.Actors)
-                        {
-                            if (ViewBag.ActorsSelected != null && ((List<int>)ViewBag.ActorsSelected).Contains(a.Id))
-                            {
-                                <option value="@a.Id" selected>@a.Name</option>
-                            }
-                            else
-                            {
-                                <option value="@a.Id">@a.Name</option>
-                            }
-                        }
-                    </select>
-                    <input id="CreateActor" type="button" value="+" class="btn btn-default btnWidth" data-toggle="modal" data-target="#myModal" />
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label col-md-2">Producer</label>
-                <div class="col-md-10">
-                    <select class="form-control" id="producer" width="500px" name="producer" data-placeholder="Selectproducer">
-                        @foreach (Producer p in ViewBag.Producers)
-                        {
-                            if (ViewBag.ProducerSelected != null && ViewBag.ProducerSelected == p.Id)
-                            {
-                                <option value="@p.Id" selected>@p.Name</option>
-                            }
-                            else
-                            {
-                                <option value="@p.Id">@p.Name</option>
-                            }
-                        }
-                    </select>
-                    <input id="CreateProducer" type="button" value="+" class="btn btn-default btnWidth" data-toggle="modal" data-target="#myModal" />
-                </div>
-            </div>
-
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Create" class="btn btn-default" />
-                </div>
+    <div class="form-horizontal">
+        <h4>Movie</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
             </div>
         </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Yor, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Yor, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Yor, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Poster Image from file : </label>
+            <div class="col-md-10">
+                <input type="file" id="posterFile" name="posterFile" accept="image/*" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Actors</label>
+            <div class="col-md-10">
+                <select class="form-control" id="actor" width="500px" name="actor" data-placeholder="Select actors" multiple>
+                    @foreach (Actor a in ViewBag.Actors)
+                {
+                    if (ViewBag.ActorsSelected != null && ((List<int>)ViewBag.ActorsSelected).Contains(a.Id))
+                    {
+                        <option value="@a.Id" selected>@a.Name</option>
+                }
+                else
+                {
+                    <option value="@a.Id">@a.Name</option>
+            }
+        }
+                </select>
+                <input id="CreateActor" type="button" value="+" class="btn btn-default btnWidth" data-toggle="modal" data-target="#myModal" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Producer</label>
+            <div class="col-md-10">
+                <select class="form-control" id="producer" width="500px" name="producer" data-placeholder="Selectproducer">
+                    @foreach (Producer p in ViewBag.Producers)
+                {
+                    if (ViewBag.ProducerSelected != null && ViewBag.ProducerSelected == p.Id)
+                    {
+                        <option value="@p.Id" selected>@p.Name</option>
+                }
+                else
+                {
+                    <option value="@p.Id">@p.Name</option>
+            }
+        }
+                </select>
+                <input id="CreateProducer" type="button" value="+" class="btn btn-default btnWidth" data-toggle="modal" data-target="#myModal" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Plot, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Plot, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Plot, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+
+    </div>
     }
 
     <div>
@@ -147,6 +149,7 @@
             url: '/Actors/ModalUpdateDB',
             dataType: 'json',
             data: actor,
+            cache: false,
             success: function (data) {
                 var errorflag = data['error'];
                 if (errorflag == "true") {
@@ -171,6 +174,7 @@
         $.ajax({
             type: 'GET',
             url: '/Actors/ModalCreate',
+            cache: false,
             success: function (data) {
                 //var formtag = '<form id="actorInput">';
                 //$("#ModalBody").html(formtag);
@@ -190,6 +194,7 @@
         $.ajax({
             type: 'POST',
             url: '/Producers/ProducerUpdateDB',
+            cache: false,
             dataType: 'json',
             data: producer,
             success: function (data) {
@@ -212,6 +217,7 @@
     $('#CreateProducer').on('click', function () {
         $('.modal-title').html("Create Producer");
         $.ajax({
+            cache: false,
             type: 'GET',
             url: '/Producers/ModalCreate',
             success: function (data) {

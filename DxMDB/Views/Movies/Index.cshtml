@@ -13,6 +13,13 @@
     <title>Index</title>
 </head>
 <body>
+    @if (TempData["Notification"] != null)
+    {
+        <div class="alert alert-success">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>@TempData["Notification"]</strong>
+        </div>
+    }
     <div class="container">
 
         <!-- Modal -->
@@ -94,9 +101,9 @@
 </html>
 
 <script>
-    function deletePopUp(name) {
+    function deletePopUp(id) {
         var urlString = '/Movies/Delete/';
-        urlString = urlString.concat(name);
+        urlString = urlString.concat(id);
         $.ajax({
             type: 'GET',
             url: urlString,

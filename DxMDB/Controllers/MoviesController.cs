@@ -129,6 +129,7 @@ namespace DxMDB.Controllers
                     }
                 }
                 db.SaveChanges();
+                TempData["Notification"] = movie.Name + " has been added succesfully to the movies database!";
                 return RedirectToAction("Index");
             }
 
@@ -205,6 +206,7 @@ namespace DxMDB.Controllers
                 }
                 db.Entry(m).State = EntityState.Modified;
                 db.SaveChanges();
+                TempData["Notification"] = movie.Name + " has been edited succesfully!";
                 return RedirectToAction("Index");
             }
             ViewBag.ProducerSelected = movie.ProducerId;
@@ -245,6 +247,7 @@ namespace DxMDB.Controllers
             }
             db.Movies.Remove(movie);
             db.SaveChanges();
+            TempData["Notification"] = movie.Name + " has been deleted from the movies database!";
             return RedirectToAction("Index");
         }
 
