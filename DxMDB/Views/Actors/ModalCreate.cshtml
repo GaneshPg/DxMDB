@@ -13,48 +13,101 @@
 </head>
 <body>
     @{
-        <form id="actorInput">
-            <div class="form-horizontal">
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.Gender, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.DOB, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Bio, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.Bio, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Bio, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <input type="button" value="Create" class="btn btn-default" id="AddActor" />
-                    </div>
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", id = "name" } })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger", id = "nameval" })
                 </div>
             </div>
-        </form>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Gender, new { htmlAttributes = new { @class = "form-control", id = "gender" } })
+                    @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger", id = "genderval" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.DOB, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { @class = "form-control", id = "dateofbirth" } })
+                    @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger", id = "dateofbirthval" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Bio, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Bio, new { htmlAttributes = new { @class = "form-control", id = "bio" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="button" value="Create" class="btn btn-default" id="AddActor" />
+                </div>
+            </div>
+        </div>
     }
 </body>
 </html>
+
+<script>
+    $('#AddActor').on('click', function () {
+        var name = $('#name').val(), gender = $('#gender').val(), dateOfBirth = $('#dateofbirth').val(), bio = $('#bio').val();
+        var valid = true;
+        if (name == undefined || name == null || name == "") {
+            valid = false;
+            $('#nameval').html("Name field is required");
+        }
+        else {
+            var pattern = new RegExp(String.raw`^([A-Za-z]+[\.\s]?)+$`);
+            if (!pattern.test(name)) {
+                valid = false;
+                $('#nameval').html("Name format is incorrect");
+            }
+            else {
+                $('#nameval').html('');
+            }
+        }
+
+        if (dateOfBirth == undefined || dateOfBirth == null || dateOfBirth == "") {
+            valid = false;
+            $('#dateofbirthval').html("Date of birth field is required");
+        }
+        else {
+            $('#dateofbirthval').html('');
+        }
+
+        if (gender == undefined || gender == null || gender == "") {
+            valid = false;
+            $('#genderval').html("Gender field is required");
+        }
+        else {
+            $('#genderval').html('');
+        }
+
+        if (valid) {
+            var actor = { "Name": name, "Gender": gender, "Bio": bio, "DOB": dateOfBirth };
+            $.ajax({
+                type: "POST",
+                url: '/Actors/ModalUpdateDB',
+                dataType: 'json',
+                data: actor,
+                success: function (data) {
+                    key = data['Id'];
+                    value = data['Name'];
+                    var newState = new Option(value, key, true, true);
+                    $("#actor").append(newState).trigger('change');
+                    $(".modal:visible").modal('toggle');
+                }
+            });
+        }
+
+        return valid;
+    });
+</script>

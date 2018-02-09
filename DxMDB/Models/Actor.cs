@@ -17,7 +17,7 @@ namespace DxMDB.Models
         public string Gender { get; set; }
 
         [Required]
-        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MMM/yyyy}")]
         public DateTime DOB { get; set; }
 
         [DataType(DataType.MultilineText)]

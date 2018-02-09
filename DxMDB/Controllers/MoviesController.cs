@@ -38,46 +38,32 @@ namespace DxMDB.Controllers
             {
                 return HttpNotFound();
             }
-            string actors = "";
-            foreach (Actor actor in movie.Actors)
-            {
-                if (String.IsNullOrEmpty(actors))
-                {
-                    actors = actor.Name;
-                }
-                else
-                {
-                    actors += ", " + actor.Name;
-                }
-            }
-
-            ViewBag.actors = actors;
 
             return View(movie);
         }
 
-        public void AddNewMovieActor(Movie m, int actorId)
+        public void AddNewMovieActor(Movie movie, int actorId)
         {
-            db.Movies.Add(m);
-            Actor a = new Actor { Id = actorId };
-            db.Actors.Attach(a);
-            m.Actors.Add(a);
+            db.Movies.Add(movie);
+            Actor actor = new Actor { Id = actorId };
+            db.Actors.Attach(actor);
+            movie.Actors.Add(actor);
             db.SaveChanges();
         }
 
         public void AddMovieActor(int movieId, int actorId)
         {
-            Movie m = db.Movies.Find(movieId);
-            Actor a = db.Actors.Find(actorId);
-            db.Actors.Attach(a);
-            m.Actors.Add(a);
+            Movie movie = db.Movies.Find(movieId);
+            Actor actor = db.Actors.Find(actorId);
+            db.Actors.Attach(actor);
+            movie.Actors.Add(actor);
             db.SaveChanges();
         }
 
         public void DeleteAllMovieActors(int movieId)
         {
-            Movie m = db.Movies.Find(movieId);
-            m.Actors.Clear();
+            Movie movie = db.Movies.Find(movieId);
+            movie.Actors.Clear();
         }
 
         // GET: Movies/Create
@@ -96,23 +82,23 @@ namespace DxMDB.Controllers
         public ActionResult Create([Bind(Include = "Id,Name,Yor,PosterUrl,Plot")] Movie movie)
         {
             movie.ProducerId = int.Parse(Request["producer"]);
-            string[] actorIds;
-            List<int> actorsSelected = new List<int>();
+            string[] actorsIdString;
+            List<int> selectedActorsList = new List<int>();
             if (!string.IsNullOrEmpty(Request["actor"]))
             {
-                actorIds = Request["actor"].Split(',');
-                foreach (string actorId in actorIds)
+                actorsIdString = Request["actor"].Split(',');
+                foreach (string actorId in actorsIdString)
                 {
-                    actorsSelected.Add(int.Parse(actorId));
+                    selectedActorsList.Add(int.Parse(actorId));
                 }
             }
             else
-                actorIds = null;
+                actorsIdString = null;
             if (ModelState.IsValid)
             {
-                foreach (int currentId in actorsSelected)
+                foreach (int currentId in selectedActorsList)
                 {
-                    if (currentId == actorsSelected.ElementAt(0))
+                    if (currentId == selectedActorsList.ElementAt(0))
                         AddNewMovieActor(movie, currentId);
                     else
                     {
@@ -134,7 +120,7 @@ namespace DxMDB.Controllers
             }
 
             ViewBag.ProducerSelected = movie.ProducerId;
-            ViewBag.ActorsSelected = actorsSelected;
+            ViewBag.ActorsSelected = selectedActorsList;
             ViewBag.Producers = db.Producers;
             ViewBag.Actors = db.Actors;
             return View(movie);
@@ -152,12 +138,12 @@ namespace DxMDB.Controllers
             {
                 return HttpNotFound();
             }
-            List<int> actorsSelected = new List<int>();
-            foreach (Actor a in movie.Actors)
-                actorsSelected.Add(a.Id);
+            List<int> selectedActorsList = new List<int>();
+            foreach (Actor actor in movie.Actors)
+                selectedActorsList.Add(actor.Id);
 
             ViewBag.ProducerSelected = movie.ProducerId;
-            ViewBag.ActorsSelected = actorsSelected;
+            ViewBag.ActorsSelected = selectedActorsList;
             ViewBag.Producers = db.Producers.ToList();
             ViewBag.Actors = db.Actors.ToList();
             return View(movie);
@@ -170,47 +156,47 @@ namespace DxMDB.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Name,Yor,Plot,ProducerId")] Movie movie)
         {
-            List<int> actorsSelected = new List<int>();
-            string[] actorIds = Request["actor"].Split(',');
-            foreach (string actorId in actorIds)
+            List<int> selectedActorsList = new List<int>();
+            string[] actorsIdString = Request["actor"].Split(',');
+            foreach (string actorId in actorsIdString)
             {
                 int currentId = int.Parse(actorId);
-                actorsSelected.Add(currentId);
+                selectedActorsList.Add(currentId);
             }
             if (ModelState.IsValid)
             {
-                Movie m = db.Movies.Find(movie.Id);
-                m.ProducerId = int.Parse(Request["producer"]);
-                m.Actors.Clear();
-                m.Name = movie.Name;
-                m.Plot = movie.Plot;
-                m.Producer = movie.Producer;
+                Movie movieFromDB = db.Movies.Find(movie.Id);
+                movieFromDB.ProducerId = int.Parse(Request["producer"]);
+                movieFromDB.Actors.Clear();
+                movieFromDB.Name = movie.Name;
+                movieFromDB.Plot = movie.Plot;
+                movieFromDB.Producer = movie.Producer;
                 foreach (string file in Request.Files)
                 {
                     var postedFile = Request.Files[file];
                     if (!string.IsNullOrEmpty(postedFile.FileName))
                     {
-                        string fullPath = Request.MapPath(m.PosterFilePath);
+                        string fullPath = Request.MapPath(movieFromDB.PosterFilePath);
                         if (System.IO.File.Exists(fullPath))
                         {
                             System.IO.File.Delete(fullPath);
                         }
-                        postedFile.SaveAs(Server.MapPath("~/Images/") + m.Id.ToString() + Path.GetFileName(postedFile.FileName));
-                        m.PosterFilePath = "~/Images/" + m.Id.ToString() + Path.GetFileName(postedFile.FileName);
+                        postedFile.SaveAs(Server.MapPath("~/Images/") + movieFromDB.Id.ToString() + Path.GetFileName(postedFile.FileName));
+                        movieFromDB.PosterFilePath = "~/Images/" + movieFromDB.Id.ToString() + Path.GetFileName(postedFile.FileName);
                     }
                 }
-                foreach (int actorId in actorsSelected)
+                foreach (int actorId in selectedActorsList)
                 {
-                    Actor a = db.Actors.Find(actorId);
-                    m.Actors.Add(a);
+                    Actor actor = db.Actors.Find(actorId);
+                    movieFromDB.Actors.Add(actor);
                 }
-                db.Entry(m).State = EntityState.Modified;
+                db.Entry(movieFromDB).State = EntityState.Modified;
                 db.SaveChanges();
                 TempData["Notification"] = movie.Name + " has been edited succesfully!";
                 return RedirectToAction("Index");
             }
             ViewBag.ProducerSelected = movie.ProducerId;
-            ViewBag.ActorsSelected = actorsSelected;
+            ViewBag.ActorsSelected = selectedActorsList;
             ViewBag.Producers = db.Producers.ToList();
             ViewBag.Actors = db.Actors.ToList();
             return View(movie);

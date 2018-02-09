@@ -77,15 +77,15 @@
             <label class="control-label col-md-2">Actors</label>
             <div class="col-md-10">
                 <select class="form-control" id="actor" width="500px" name="actor" data-placeholder="Select actors" multiple>
-                    @foreach (Actor a in ViewBag.Actors)
+                    @foreach (Actor actor in ViewBag.Actors)
                 {
-                    if (ViewBag.ActorsSelected != null && ((List<int>)ViewBag.ActorsSelected).Contains(a.Id))
+                    if (ViewBag.ActorsSelected != null && ((List<int>)ViewBag.ActorsSelected).Contains(actor.Id))
                     {
-                        <option value="@a.Id" selected>@a.Name</option>
+                        <option value="@actor.Id" selected>@actor.Name</option>
                 }
                 else
                 {
-                    <option value="@a.Id">@a.Name</option>
+                    <option value="@actor.Id">@actor.Name</option>
             }
         }
                 </select>
@@ -97,15 +97,15 @@
             <label class="control-label col-md-2">Producer</label>
             <div class="col-md-10">
                 <select class="form-control" id="producer" width="500px" name="producer" data-placeholder="Selectproducer">
-                    @foreach (Producer p in ViewBag.Producers)
+                    @foreach (Producer producer in ViewBag.Producers)
                 {
-                    if (ViewBag.ProducerSelected != null && ViewBag.ProducerSelected == p.Id)
+                    if (ViewBag.ProducerSelected != null && ViewBag.ProducerSelected == producer.Id)
                     {
-                        <option value="@p.Id" selected>@p.Name</option>
+                        <option value="@producer.Id" selected>@producer.Name</option>
                 }
                 else
                 {
-                    <option value="@p.Id">@p.Name</option>
+                    <option value="@producer.Id">@producer.Name</option>
             }
         }
                 </select>
@@ -139,36 +139,7 @@
 <script>
     $("#producer").select2();
     $("#actor").select2();
-    function ActorAjaxCall() {
-        var dataArray = $("#actorInput").serializeArray(), actor = {};
-        $(dataArray).each(function (i, field) {
-            actor[field.name] = field.value;
-        });
-        $.ajax({
-            type: 'POST',
-            url: '/Actors/ModalUpdateDB',
-            dataType: 'json',
-            data: actor,
-            cache: false,
-            success: function (data) {
-                var errorflag = data['error'];
-                if (errorflag == "true") {
-                    //var formtag = '<form id="actorInput">';
-                    //$("#ModalBody").html(formtag);
-                    $('#ModalBody').html(data['view']);
-                    //$('#ModalBody').append('</form>');
-                    $('#AddActor').on('click', ActorAjaxCall);
-                }
-                else {
-                    key = data['Id'];
-                    value = data['Name'];
-                    var newState = new Option(value, key, true, true);
-                    $("#actor").append(newState).trigger('change');
-                    $(".modal:visible").modal('toggle');
-                }
-            }
-        });
-    }
+
     $('#CreateActor').on('click', function () {
         $('.modal-title').html("Create Actor");
         $.ajax({
@@ -176,43 +147,10 @@
             url: '/Actors/ModalCreate',
             cache: false,
             success: function (data) {
-                //var formtag = '<form id="actorInput">';
-                //$("#ModalBody").html(formtag);
                 $('#ModalBody').html(data);
-                //$('#ModalBody').append('</form>');
-                $('#AddActor').on('click', ActorAjaxCall);
             }
         });
     });
-
-    function ProducerAjaxCall() {
-        var dataArray = $("#producerInput").serializeArray(), producer = {};
-
-        $(dataArray).each(function (i, field) {
-            producer[field.name] = field.value;
-        });
-        $.ajax({
-            type: 'POST',
-            url: '/Producers/ProducerUpdateDB',
-            cache: false,
-            dataType: 'json',
-            data: producer,
-            success: function (data) {
-                var error = data['error'];
-                if (error == "true") {
-                    $("#ModalBody").html(data['view']);
-                    $('#AddProducer').on('click', ProducerAjaxCall);
-                }
-                else {
-                    key = data['Id'];
-                    value = data['Name'];
-                    var newState = new Option(value, key, true, true);
-                    $("#producer").append(newState).trigger('change');
-                    $(".modal:visible").modal('toggle');
-                }
-            }
-        });
-    }
 
     $('#CreateProducer').on('click', function () {
         $('.modal-title').html("Create Producer");
@@ -222,7 +160,6 @@
             url: '/Producers/ModalCreate',
             success: function (data) {
                 $("#ModalBody").html(data);
-                $('#AddProducer').on('click', ProducerAjaxCall);
             }
         });
     });

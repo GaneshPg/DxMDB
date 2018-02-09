@@ -14,6 +14,13 @@
     <script src="~/Scripts/jquery-1.10.2.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <style type="text/css">
+        textarea {
+            max-width: 600px;
+            width: 600px;
+            height: 300px;
+        }
+    </style>
 </head>
 <body>
 
@@ -78,15 +85,15 @@
             <label class="control-label col-md-2">Actors</label>
             <div class="col-md-10">
                 <select class="form-control" id="actor" width="500px" name="actor" data-placeholder="Select actors" multiple>
-                    @foreach (Actor a in ViewBag.Actors)
+                    @foreach (Actor actor in ViewBag.Actors)
                 {
-                    if (ViewBag.ActorsSelected != null && ((List<int>)ViewBag.ActorsSelected).Contains(a.Id))
+                    if (ViewBag.ActorsSelected != null && ((List<int>)ViewBag.ActorsSelected).Contains(actor.Id))
                     {
-                        <option value="@a.Id" selected>@a.Name</option>
+                        <option value="@actor.Id" selected>@actor.Name</option>
                 }
                 else
                 {
-                    <option value="@a.Id">@a.Name</option>
+                    <option value="@actor.Id">@actor.Name</option>
             }
         }
                 </select>
@@ -98,15 +105,15 @@
             <label class="control-label col-md-2">Producer</label>
             <div class="col-md-10">
                 <select class="form-control" id="producer" width="500px" name="producer" data-placeholder="Select producer">
-                    @foreach (Producer p in ViewBag.Producers)
+                    @foreach (Producer producer in ViewBag.Producers)
                 {
-                    if (ViewBag.ProducerSelected != null && ViewBag.ProducerSelected == p.Id)
+                    if (ViewBag.ProducerSelected != null && ViewBag.ProducerSelected == producer.Id)
                     {
-                        <option value="@p.Id" selected>@p.Name</option>
+                        <option value="@producer.Id" selected>@producer.Name</option>
                 }
                 else
                 {
-                    <option value="@p.Id">@p.Name</option>
+                    <option value="@producer.Id">@producer.Name</option>
             }
         }
                 </select>
@@ -117,7 +124,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Plot, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Plot, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.TextAreaFor(model => model.Plot, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Plot, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -138,9 +145,9 @@
 </html>
 
 <script>
-    function resetImage(e) {
-        e.wrap('<form>').closest('form').get(0).reset();
-        e.unwrap();
+    function resetImage(imageElement) {
+        imageElement.wrap('<form>').closest('form').get(0).reset();
+        imageElement.unwrap();
     }
     $("#producer").select2();
     $("#actor").select2();

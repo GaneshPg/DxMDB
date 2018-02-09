@@ -1,4 +1,5 @@
 ﻿@model DxMDB.Models.Movie
+@using DxMDB.Models;
 
 @{
     Layout = "/Views/Shared/_Layout.cshtml";
@@ -10,63 +11,59 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Details</title>
+    <style type="text/css">
+        .sidebar {
+            float: right;
+            margin: 0 0 0 20px;
+            font-weight: bold;
+        }
+        img { 
+            max-height: 500px;
+            max-width: 500px;
+            width: auto;
+            height: auto;
+        }
+
+        .plot {
+            text-align: justify;
+            text-indent: 2em;
+            margin: 10px 10px 10px 10px;
+            white-space: pre-wrap;
+        }
+    </style>
 </head>
 <body>
     <div>
-        <h4>Movie</h4>
+        <h2>@Model.Name (@Model.Yor)</h2>
+        <p>
+            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+            @Html.ActionLink("Back to List", "Index")
+        </p>
         <hr />
-        @if(!string.IsNullOrEmpty(Model.PosterFilePath))
-        {
-            <img src="@Url.Content(Model.PosterFilePath)" />
-        }
+        <div class="sidebar">
+            @if (!string.IsNullOrEmpty(Model.PosterFilePath))
+            {
+                <img src="@Url.Content(Model.PosterFilePath)" />
+            }
 
-        <dl class="dl-horizontal">
+            <p>
+                Actors : <br />
+                @foreach (Actor actor in Model.Actors)
+                {
+                    @actor.Name<br />
+                }
+            </p>
 
-            <dt>
-                @Html.DisplayNameFor(model => model.Name)
-            </dt>
+            <p>
+                Producer : 
+                @Model.Producer.Name
+            </p>
+        </div>
+        <h3>Plot</h3>
+        <p class="plot">
+            @Model.Plot
+        </p>
 
-            <dd>
-                @Html.DisplayFor(model => model.Name)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.Yor)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.Yor)
-            </dd>
-
-            <dt>
-                Actors
-            </dt>
-
-            <dd>
-                @ViewBag.actors
-            </dd>
-
-            <dt>
-                Producer
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.Producer.Name)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.Plot)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.Plot)
-            </dd>
-
-        </dl>
     </div>
-    <p>
-        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-        @Html.ActionLink("Back to List", "Index")
-    </p>
 </body>
 </html>
