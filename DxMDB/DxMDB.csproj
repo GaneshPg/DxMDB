@@ -207,6 +207,14 @@
     <Compile Include="Migrations\201802081036106_AddNameValidation.Designer.cs">
       <DependentUpon>201802081036106_AddNameValidation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802091055524_GenderRequired.cs" />
+    <Compile Include="Migrations\201802091055524_GenderRequired.Designer.cs">
+      <DependentUpon>201802091055524_GenderRequired.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802091159526_RenameProperty.cs" />
+    <Compile Include="Migrations\201802091159526_RenameProperty.Designer.cs">
+      <DependentUpon>201802091159526_RenameProperty.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Actor.cs" />
     <Compile Include="Models\Movie.cs" />
@@ -357,6 +365,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802081036106_AddNameValidation.resx">
       <DependentUpon>201802081036106_AddNameValidation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802091055524_GenderRequired.resx">
+      <DependentUpon>201802091055524_GenderRequired.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802091159526_RenameProperty.resx">
+      <DependentUpon>201802091159526_RenameProperty.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

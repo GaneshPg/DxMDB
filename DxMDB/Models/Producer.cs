@@ -14,11 +14,14 @@ namespace DxMDB.Models
         [NameFormatValidation]
         public string Name { get; set; }
 
+        [Required]
         public string Gender { get; set; }
 
         [Required]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MMM/yyyy}")]
         [DataType(DataType.Date)]
-        public DateTime DOB { get; set; }
+        [Display(Name="Date of Birth")]
+        public DateTime DateOfBirth { get; set; }
 
         [DataType(DataType.MultilineText)]
         public string Bio { get; set; }

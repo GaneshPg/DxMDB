@@ -43,12 +43,12 @@ namespace DxMDB.Controllers
         }
 
         [HttpPost]
-        public ActionResult ModalUpdateDB(string Name, string Gender, string DOB, string Bio)
+        public ActionResult ModalUpdateDB(string Name, string Gender, string DateOfBirth, string Bio)
         {
             Producer producer;
             try
             {
-                producer = new Producer { Name = Name, Gender = Gender, DOB = DateTime.Parse(DOB), Bio = Bio };
+                producer = new Producer { Name = Name, Gender = Gender, DateOfBirth = DateTime.Parse(DateOfBirth), Bio = Bio };
             }
             catch (Exception e)
             {
@@ -72,7 +72,7 @@ namespace DxMDB.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Gender,DOB,Bio")] Producer producer)
+        public ActionResult Create([Bind(Include = "Id,Name,Gender,DateOfBirth,Bio")] Producer producer)
         {
             if (ModelState.IsValid)
             {
@@ -105,7 +105,7 @@ namespace DxMDB.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Gender,DOB,Bio")] Producer producer)
+        public ActionResult Edit([Bind(Include = "Id,Name,Gender,DateOfBirth,Bio")] Producer producer)
         {
             if (ModelState.IsValid)
             {

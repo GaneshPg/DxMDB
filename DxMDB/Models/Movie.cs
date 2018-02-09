@@ -16,7 +16,8 @@ namespace DxMDB.Models
 
         [Required]
         [Display(Name="Year of Release")]
-        public int Yor { get; set; }
+        [Range(1950,2030)]
+        public int YearOfRelease { get; set; }
 
         [Display(Name="Poster Image")]
         public string PosterFilePath { get; set; }

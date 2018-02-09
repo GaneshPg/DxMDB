@@ -48,7 +48,7 @@
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
-                Year of Release
+                @Html.DisplayNameFor(model => model.YearOfRelease)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Actors)
@@ -68,7 +68,7 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Yor)
+                    @Html.DisplayFor(modelItem => item.YearOfRelease)
                 </td>
                 @{
                     string actors = "";

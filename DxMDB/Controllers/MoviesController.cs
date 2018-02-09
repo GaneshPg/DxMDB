@@ -79,7 +79,7 @@ namespace DxMDB.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Yor,PosterUrl,Plot")] Movie movie)
+        public ActionResult Create([Bind(Include = "Id,Name,YearOfRelease,PosterUrl,Plot")] Movie movie)
         {
             movie.ProducerId = int.Parse(Request["producer"]);
             string[] actorsIdString;
@@ -154,7 +154,7 @@ namespace DxMDB.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Yor,Plot,ProducerId")] Movie movie)
+        public ActionResult Edit([Bind(Include = "Id,Name,YearOfRelease,Plot,ProducerId")] Movie movie)
         {
             List<int> selectedActorsList = new List<int>();
             string[] actorsIdString = Request["actor"].Split(',');

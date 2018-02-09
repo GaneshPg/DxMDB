@@ -28,7 +28,7 @@
                 <!-- Modal content-->
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <button type="button" class="close" data-dismiss="modal" id="closeModal">&times;</button>
                         <h4 class="modal-title">Delete Confirmation</h4>
                     </div>
                     <div class="modal-body" id="ModalBody">
@@ -50,7 +50,7 @@
                 @Html.DisplayNameFor(model => model.Gender)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DOB)
+                @Html.DisplayNameFor(model => model.DateOfBirth)
             </th>
             <th></th>
         </tr>
@@ -68,7 +68,7 @@
                     @Html.DisplayFor(modelItem => item.Gender)
                 </td>
                 <td>
-                    @item.DOB.ToShortDateString()
+                    @item.DateOfBirth.ToShortDateString()
                 </td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
