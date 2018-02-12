@@ -18,12 +18,16 @@ namespace DxMDB.Controllers
         // GET: Movies
         public ActionResult Index(int? id)
         {
-            if (id.HasValue)
-            {
-                return RedirectToAction("Details", new { id = id });
-            }
-            var movies = db.Movies.Include(m => m.Producer);
-            return View(movies.ToList());
+
+            int index = id ?? 1;
+            var viewModel = new MoviesIndexViewModel();
+            int entriesPerPage = viewModel.NumberOfRows * viewModel.NumberOfColumns;
+            int skip = (index - 1) * entriesPerPage;
+
+            viewModel.Movies = db.Movies.Include(movie => movie.Producer).OrderBy(movie => movie.Name).Skip(skip).Take(entriesPerPage).ToList();
+            viewModel.PageNumber = index;
+            viewModel.NumberOfPages = (int)Math.Ceiling((float)db.Movies.Count() / entriesPerPage);
+            return View(viewModel);
         }
 
         // GET: Movies/Details/5
@@ -113,6 +117,10 @@ namespace DxMDB.Controllers
                         postedFile.SaveAs(Server.MapPath("~/Images/") + movie.Id.ToString() + Path.GetFileName(postedFile.FileName));
                         movie.PosterFilePath = "~/Images/" + movie.Id.ToString() + Path.GetFileName(postedFile.FileName);
                     }
+                    else
+                    {
+                        movie.PosterFilePath = "~/Images/no-image.png";
+                    }
                 }
                 db.SaveChanges();
                 TempData["Notification"] = movie.Name + " has been added succesfully to the movies database!";
@@ -177,10 +185,13 @@ namespace DxMDB.Controllers
                     var postedFile = Request.Files[file];
                     if (!string.IsNullOrEmpty(postedFile.FileName))
                     {
-                        string fullPath = Request.MapPath(movieFromDB.PosterFilePath);
-                        if (System.IO.File.Exists(fullPath))
+                        if (movieFromDB.PosterFilePath != "~/Images/no-image.png")
                         {
-                            System.IO.File.Delete(fullPath);
+                            string fullPath = Request.MapPath(movieFromDB.PosterFilePath);
+                            if (System.IO.File.Exists(fullPath))
+                            {
+                                System.IO.File.Delete(fullPath);
+                            }
                         }
                         postedFile.SaveAs(Server.MapPath("~/Images/") + movieFromDB.Id.ToString() + Path.GetFileName(postedFile.FileName));
                         movieFromDB.PosterFilePath = "~/Images/" + movieFromDB.Id.ToString() + Path.GetFileName(postedFile.FileName);
@@ -224,7 +235,7 @@ namespace DxMDB.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Movie movie = db.Movies.Find(id);
-            if (!string.IsNullOrEmpty(movie.PosterFilePath))
+            if (!string.IsNullOrEmpty(movie.PosterFilePath) && movie.PosterFilePath != "~/Images/no-image.png")
             {
                 string fullPath = Request.MapPath(movie.PosterFilePath);
                 if (System.IO.File.Exists(fullPath))

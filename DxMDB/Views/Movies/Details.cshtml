@@ -15,13 +15,17 @@
         .sidebar {
             float: right;
             margin: 0 0 0 20px;
+            padding: 10px 10px 10px 10px;
             font-weight: bold;
+            border: dotted thin;
         }
-        img { 
+
+        img {
             max-height: 500px;
             max-width: 500px;
             width: auto;
             height: auto;
+            margin-bottom: 10px;
         }
 
         .plot {
@@ -33,37 +37,40 @@
     </style>
 </head>
 <body>
-    <div>
-        <h2>@Model.Name (@Model.YearOfRelease)</h2>
-        <p>
-            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-            @Html.ActionLink("Back to List", "Index")
-        </p>
-        <hr />
-        <div class="sidebar">
-            @if (!string.IsNullOrEmpty(Model.PosterFilePath))
-            {
-                <img src="@Url.Content(Model.PosterFilePath)" />
-            }
-
+    <div class="outer-container">
+        <div class="inner-container">
+            <h2>@Model.Name (@Model.YearOfRelease)</h2>
             <p>
-                Actors : <br />
-                @foreach (Actor actor in Model.Actors)
-                {
-                    @actor.Name<br />
-                }
+                @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+                @Html.ActionLink("Back to List", "Index")
             </p>
+            <hr />
+            <div class="sidebar">
+                @if (!string.IsNullOrEmpty(Model.PosterFilePath))
+                {
+                    <img src="@Url.Content(Model.PosterFilePath)" />
+                }
 
-            <p>
-                Producer : 
-                @Model.Producer.Name
+                <p>Year of Release : @Model.YearOfRelease</p>
+
+                <p>
+                    Actors : <br />
+                    @foreach (Actor actor in Model.Actors)
+                    {
+                        @actor.Name<br />
+                    }
+                </p>
+
+                <p>
+                    Producer :
+                    @Model.Producer.Name
+                </p>
+            </div>
+            <h3>Plot</h3>
+            <p class="plot">
+                @Model.Plot
             </p>
         </div>
-        <h3>Plot</h3>
-        <p class="plot">
-            @Model.Plot
-        </p>
-
     </div>
 </body>
 </html>

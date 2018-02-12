@@ -11,19 +11,8 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Create</title>
-    <script src="~/Scripts/jquery-1.10.2.js"></script>
-    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-    @*<style type="text/css">
-        /*#dvPreview {
-            filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=image);
-            min-height: 400px;
-            min-width: 400px;
-            display: none;
-        }*/
-
-    </style>*@
 
 </head>
 <body>
@@ -77,10 +66,10 @@
 
             <div class="form-group">
                 <label class="control-label col-md-2">Poster Image from file : </label>
-                <div class="col-md-10">
+                <div class="col-md-3">
                     <input type="file" id="posterFile" name="posterFile" accept="image/*" />
                 </div>
-                <div class="col-md-10">
+                <div class="col-md-2">
                     <button onclick="resetImage($('#posterFile')); event.stopPropagation(); event.preventDefault();">Remove</button>
                 </div>
             </div>
@@ -130,8 +119,8 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Plot, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.Plot, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Plot, "", new { @class = "text-danger", id = "test" })
+                    @Html.EditorFor(model => model.Plot, new { htmlAttributes = new { @class = "form-control largeTextBox" } })
+                    @Html.ValidationMessageFor(model => model.Plot, "", new { @class = "text-danger" })
                 </div>
             </div>
 

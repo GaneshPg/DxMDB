@@ -1,5 +1,5 @@
 ﻿@using DxMDB.Models
-@model IEnumerable<DxMDB.Models.Movie>
+@model DxMDB.Models.MoviesIndexViewModel
 
 @{
     Layout = "/Views/Shared/_Layout.cshtml";
@@ -11,6 +11,22 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
+    <style type="text/css">
+        .img-thumbnail {
+            height: 250px;
+            overflow: auto;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
+        .wrapper {
+            text-align: center;
+        }
+
+        .inner-block {
+            display: inline-block;
+        }
+    </style>
 </head>
 <body>
     @if (TempData["Notification"] != null)
@@ -42,72 +58,121 @@
     <p>
         @Html.ActionLink("Create New", "Create")
     </p>
-    <table class="table">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.YearOfRelease)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Actors)
-            </th>
-            <th>
-                Producer
-            </th>
-            <th></th>
-        </tr>
-
-        @foreach (var item in Model)
-        {
-            string id = item.Id.ToString();
-
+    @*<table class="table">
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.YearOfRelease)
-                </td>
-                @{
-                    string actors = "";
-                    foreach (Actor actor in item.Actors)
-                    {
-                        if (String.IsNullOrEmpty(actors))
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.YearOfRelease)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Actors)
+                </th>
+                <th>
+                    Producer
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                string id = item.Id.ToString();
+
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.YearOfRelease)
+                    </td>
+                    @{
+                        string actors = "";
+                        foreach (Actor actor in item.Actors)
                         {
-                            actors = actor.Name;
-                        }
-                        else
-                        {
-                            actors += "\n" + actor.Name;
+                            if (String.IsNullOrEmpty(actors))
+                            {
+                                actors = actor.Name;
+                            }
+                            else
+                            {
+                                actors += "\n" + actor.Name;
+                            }
                         }
                     }
-                }
 
-                <td align="left" style="white-space:pre">@actors</td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Producer.Name)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    <a id=@id href="#@id" onclick="javascript:deletePopUp(id)" data-toggle="modal" data-target="#myModal">Delete</a>
-                </td>
-            </tr>
+                    <td align="left" style="white-space:pre">@actors</td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Producer.Name)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                        <a id=@id href="#@id" onclick="javascript:deletePopUp(id)" data-toggle="modal" data-target="#myModal">Delete</a>
+                    </td>
+                </tr>
+            }
+        </table>*@
+
+    <div class="container">
+        @for (int row = 1; row <= Model.NumberOfRows; row++)
+        {
+            <div class="row wrapper">
+                @for (int col = 1; col <= Model.NumberOfColumns; col++)
+                {
+                    var index = (row - 1) * Model.NumberOfColumns + col - 1;
+                    if (index < Model.Movies.Count())
+                    {
+                        var item = Model.Movies.ElementAt(index);
+                        <div class="col-md-3 inner-block">
+                            <a href="/Movies/Details/@item.Id">
+                                <div>
+                                    <div><img src="@Url.Content(item.PosterFilePath)" class="img-thumbnail" /></div>
+                                    <div>@item.Name (@item.YearOfRelease)</div>
+                                </div>
+                            </a>
+                            <div>
+                                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                                <a id=@item.Id href="#@item.Id" onclick="javascript:deletePopUp(id)" data-toggle="modal" data-target="#myModal">Delete</a>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
         }
-    </table>
+    </div>
+    <div class="wrapper">
+        <div class="inner-block" id="navigateButtons">
+            <input id="prevBtn" type="button" value="Prev" onclick="location.href='@Url.Action("Index", "Movies", new { id = Model.PageNumber - 1 })'" />
+            <span style="padding-left:5px;padding-right:5px;">
+                Page @Model.PageNumber of @Model.NumberOfPages
+            </span>
+            <input id="nextBtn" type="button" value="Next" onclick="location.href='@Url.Action("Index", "Movies", new { id = Model.PageNumber + 1 })'" />
+        </div>
+    </div>
+
 </body>
 </html>
 
 <script>
+
+    if (@Model.PageNumber == 1) {
+        $('#prevBtn').hide();
+    }
+
+    if (@Model.PageNumber == @Model.NumberOfPages) {
+        $('#nextBtn').hide();
+    }
+
     function deletePopUp(id) {
         var urlString = '/Movies/Delete/';
         urlString = urlString.concat(id);
         $.ajax({
             type: 'GET',
             url: urlString,
-            success: function (data) { $("#ModalBody").html(data); }
+            success: function (data) {
+                $("#ModalBody").html(data);
+            }
         });
     }
 </script>

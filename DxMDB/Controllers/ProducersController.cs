@@ -53,11 +53,13 @@ namespace DxMDB.Controllers
             catch (Exception e)
             {
                 producer = new Producer { Name = Name, Gender = Gender, Bio = Bio };
-            }
-            JObject jObject = JObject.FromObject(producer);
+            }           
 
             db.Producers.Add(producer);
             db.SaveChanges();
+
+            JObject jObject = JObject.FromObject(producer);
+
             return Content(jObject.ToString(), "application/json");
         }
 

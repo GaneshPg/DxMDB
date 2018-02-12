@@ -54,10 +54,12 @@ namespace DxMDB.Controllers
             {
                 actor = new Actor { Name = Name, Gender = Gender, Bio = Bio };
             }
-            JObject jObject = JObject.FromObject(actor);
 
             db.Actors.Add(actor);
             db.SaveChanges();
+
+            JObject jObject = JObject.FromObject(actor);
+
             return Content(jObject.ToString(), "application/json");
 
         }
