@@ -171,6 +171,7 @@ namespace DxMDB.Controllers
                 movieFromDB.Name = movie.Name;
                 movieFromDB.Plot = movie.Plot;
                 movieFromDB.Producer = movie.Producer;
+                movieFromDB.YearOfRelease = movie.YearOfRelease;
                 foreach (string file in Request.Files)
                 {
                     var postedFile = Request.Files[file];

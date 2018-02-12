@@ -51,91 +51,91 @@
     {
         @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>Movie</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
+        <div class="form-horizontal">
+            <h4>Movie</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Id)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.YearOfRelease, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.YearOfRelease, new { htmlAttributes = new { @class = "form-control", min = "1950", max = "2030" } })
-                @Html.ValidationMessageFor(model => model.YearOfRelease, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.YearOfRelease, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.YearOfRelease, new { htmlAttributes = new { @class = "form-control", min = "1950", max = "2030" } })
+                    @Html.ValidationMessageFor(model => model.YearOfRelease, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label class="control-label col-md-2">Poster Image from file : </label>
-            <div class="col-md-10">
-                <input type="file" id="posterFile" name="posterFile" />
-                <button onclick="resetImage($('#posterFile'));event.stopPropagation();event.preventDefault()">Remove</button>
+            <div class="form-group">
+                <label class="control-label col-md-2">Poster Image from file : </label>
+                <div class="col-md-10">
+                    <input type="file" id="posterFile" name="posterFile" />
+                    <button onclick="resetImage($('#posterFile'));event.stopPropagation();event.preventDefault()">Remove</button>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label class="control-label col-md-2">Actors</label>
-            <div class="col-md-10">
-                <select class="form-control" id="actor" width="500px" name="actor" data-placeholder="Select actors" multiple>
-                    @foreach (Actor actor in ViewBag.Actors)
-                {
-                    if (ViewBag.ActorsSelected != null && ((List<int>)ViewBag.ActorsSelected).Contains(actor.Id))
-                    {
-                        <option value="@actor.Id" selected>@actor.Name</option>
-                }
-                else
-                {
-                    <option value="@actor.Id">@actor.Name</option>
-            }
-        }
-                </select>
-                <input id="CreateActor" type="button" value="+" class="btn btn-default btnWidth" data-toggle="modal" data-target="#myModal" />
+            <div class="form-group">
+                <label class="control-label col-md-2">Actors</label>
+                <div class="col-md-10">
+                    <select class="form-control" id="actor" width="500px" name="actor" data-placeholder="Select actors" multiple>
+                        @foreach (Actor actor in ViewBag.Actors)
+                        {
+                            if (ViewBag.ActorsSelected != null && ((List<int>)ViewBag.ActorsSelected).Contains(actor.Id))
+                            {
+                                <option value="@actor.Id" selected>@actor.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@actor.Id">@actor.Name</option>
+                            }
+                        }
+                    </select>
+                    <input id="CreateActor" type="button" value="+" class="btn btn-default btnWidth" data-toggle="modal" data-target="#myModal" />
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label class="control-label col-md-2">Producer</label>
-            <div class="col-md-10">
-                <select class="form-control" id="producer" width="500px" name="producer" data-placeholder="Select producer">
-                    @foreach (Producer producer in ViewBag.Producers)
-                {
-                    if (ViewBag.ProducerSelected != null && ViewBag.ProducerSelected == producer.Id)
-                    {
-                        <option value="@producer.Id" selected>@producer.Name</option>
-                }
-                else
-                {
-                    <option value="@producer.Id">@producer.Name</option>
-            }
-        }
-                </select>
-                <input id="CreateProducer" type="button" value="+" class="btn btn-default btnWidth" data-toggle="modal" data-target="#myModal" />
+            <div class="form-group">
+                <label class="control-label col-md-2">Producer</label>
+                <div class="col-md-10">
+                    <select class="form-control" id="producer" width="500px" name="producer" data-placeholder="Select producer">
+                        @foreach (Producer producer in ViewBag.Producers)
+                        {
+                            if (ViewBag.ProducerSelected != null && ViewBag.ProducerSelected == producer.Id)
+                            {
+                                <option value="@producer.Id" selected>@producer.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@producer.Id">@producer.Name</option>
+                            }
+                        }
+                    </select>
+                    <input id="CreateProducer" type="button" value="+" class="btn btn-default btnWidth" data-toggle="modal" data-target="#myModal" />
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Plot, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextAreaFor(model => model.Plot, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Plot, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Plot, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextAreaFor(model => model.Plot, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Plot, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
             </div>
-        </div>
 
-    </div>
+        </div>
     }
 
     <div>
@@ -156,58 +156,21 @@
         $.ajax({
             type: 'GET',
             url: '/Actors/ModalCreate',
+            cache: false,
             success: function (data) {
-                $("#ModalBody").html(data);
-                $('#AddActor').on('click', function () {
-                    var dataArray = $("#actorInput").serializeArray(), actor = {};
-
-                    $(dataArray).each(function (i, field) {
-                        actor[field.name] = field.value;
-                    });
-                    $.ajax({
-                        type: 'POST',
-                        url: '/Actors/ModalUpdateDB',
-                        dataType: 'json',
-                        data: actor,
-                        success: function (data) {
-                            var key = data['Id'];
-                            var value = data['Name'];
-                            var newState = new Option(value, key, true, true);
-                            $("#actor").append(newState).trigger('change');
-                            $(".modal:visible").modal('toggle');
-                        }
-                    });
-                });
+                $('#ModalBody').html(data);
             }
         });
     });
+
     $('#CreateProducer').on('click', function () {
         $('.modal-title').html("Create Producer");
         $.ajax({
+            cache: false,
             type: 'GET',
             url: '/Producers/ModalCreate',
             success: function (data) {
                 $("#ModalBody").html(data);
-                $('#AddProducer').on('click', function () {
-                    var dataArray = $("#producerInput").serializeArray(), producer = {};
-
-                    $(dataArray).each(function (i, field) {
-                        producer[field.name] = field.value;
-                    });
-                    $.ajax({
-                        type: 'POST',
-                        url: '/Producers/ModalUpdateDB',
-                        dataType: 'json',
-                        data: producer,
-                        success: function (data) {
-                            var key = data['Id'];
-                            var value = data['Name'];
-                            var newState = new Option(value, key, true, true);
-                            $("#producer").append(newState).trigger('change');
-                            $(".modal:visible").modal('toggle');
-                        }
-                    });
-                });
             }
         });
     });
