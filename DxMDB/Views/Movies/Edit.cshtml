@@ -14,11 +14,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
     <style type="text/css">
-        textarea {
-            max-width: 300px;
-            width: 300px;
-            height: 500px;
-        }
     </style>
 </head>
 <body>
@@ -123,7 +118,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Plot, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.TextAreaFor(model => model.Plot, new { htmlAttributes = new { @class = "form-control largeTextBox" } })
+                    @Html.EditorFor(model => model.Plot, new { htmlAttributes = new { @class = "form-control largeTextBox" } })
                     @Html.ValidationMessageFor(model => model.Plot, "", new { @class = "text-danger" })
                 </div>
             </div>
