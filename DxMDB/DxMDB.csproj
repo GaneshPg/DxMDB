@@ -183,12 +183,7 @@
     <Compile Include="Controllers\ActorsController.cs" />
     <Compile Include="Controllers\MoviesController.cs" />
     <Compile Include="Controllers\ProducersController.cs" />
-    <Compile Include="DAL\Actor.cs" />
-    <Compile Include="DAL\Movie.cs" />
     <Compile Include="DAL\MovieDBContext.cs" />
-    <Compile Include="DAL\MoviesIndexViewModel.cs" />
-    <Compile Include="DAL\NameFormatValidation.cs" />
-    <Compile Include="DAL\Producer.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -237,12 +232,11 @@
       <DependentUpon>201802130712262_DateOfBirthNonNullable.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\Actor.cs" />
-    <Compile Include="Models\Movie.cs" />
-    <Compile Include="Models\MovieDBContext.cs" />
-    <Compile Include="Models\MoviesIndexViewModel.cs" />
-    <Compile Include="Models\NameFormatValidation.cs" />
-    <Compile Include="Models\Producer.cs" />
+    <Compile Include="DAL\Actor.cs" />
+    <Compile Include="DAL\Movie.cs" />
+    <Compile Include="DAL\MoviesIndexViewModel.cs" />
+    <Compile Include="DAL\NameFormatValidation.cs" />
+    <Compile Include="DAL\Producer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\ActorsRepository.cs" />
     <Compile Include="Repository\MoviesRepository.cs" />
