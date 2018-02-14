@@ -11,22 +11,6 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Create</title>
-    @*<script src="~/Scripts/jquery-3.3.1.min.js"></script>*@
-    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" media="screen"
-          href="http://tarruda.github.com/bootstrap-datetimepicker/assets/css/bootstrap-datetimepicker.min.css">
-    <script type="text/javascript"
-            src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js">
-    </script>
-    <script type="text/javascript"
-            src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js">
-    </script>
-    <script type="text/javascript"
-            src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js">
-    </script>
-    <script type="text/javascript"
-            src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.pt-BR.js">
-    </script>
 </head>
 <body>
     @using (Html.BeginForm())
@@ -56,16 +40,10 @@
 
             <div class="form-group">
                 @Html.LabelFor(model => model.DateOfBirth, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div id="datetimepicker">
-                    <input type="date" id="DateOfBirth" name="DateOfBirth" />
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.DateOfBirth, new { htmlAttributes = new { @class = "form-control", id = "dobpick" } })
+                    @Html.ValidationMessageFor(model => model.DateOfBirth, "", new { @class = "text-danger" })
                 </div>
-
-
-
-                @*<div class="col-md-10">
-                        @Html.DatePickerFor(model => model.DateOfBirth)
-                        @Html.ValidationMessageFor(model => model.DateOfBirth, "", new { @class = "text-danger" })
-                    </div>*@
             </div>
 
             <div class="form-group">
@@ -91,5 +69,13 @@
 </html>
 
 
-
+<script type="text/javascript">
+    $('#dobpick').datepicker({
+        dateFormat: "dd/M/yy",
+        changeMonth: true,
+        changeYear: true,
+        yearRange: "-60:+0",
+        showOn: "button"
+    });
+</script>
 

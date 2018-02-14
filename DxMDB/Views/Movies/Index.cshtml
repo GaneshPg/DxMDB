@@ -26,10 +26,6 @@
         .inner-block {
             display: inline-block;
         }
-
-        #MovieDiv:hover {
-            background-color: #bbbbbb;
-        }
     </style>
 </head>
 <body>
@@ -62,6 +58,61 @@
     <p>
         @Html.ActionLink("Create New", "Create")
     </p>
+    @*<table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.YearOfRelease)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Actors)
+                </th>
+                <th>
+                    Producer
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                string id = item.Id.ToString();
+
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.YearOfRelease)
+                    </td>
+                    @{
+                        string actors = "";
+                        foreach (Actor actor in item.Actors)
+                        {
+                            if (String.IsNullOrEmpty(actors))
+                            {
+                                actors = actor.Name;
+                            }
+                            else
+                            {
+                                actors += "\n" + actor.Name;
+                            }
+                        }
+                    }
+
+                    <td align="left" style="white-space:pre">@actors</td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Producer.Name)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                        @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                        <a id=@id href="#@id" onclick="javascript:deletePopUp(id)" data-toggle="modal" data-target="#myModal">Delete</a>
+                    </td>
+                </tr>
+            }
+        </table>*@
 
     <div class="container">
         @for (int row = 1; row <= Model.NumberOfRows; row++)
@@ -75,7 +126,7 @@
                         var item = Model.Movies.ElementAt(index);
                         <div class="col-md-3 inner-block">
                             <a href="/Movies/Details/@item.Id">
-                                <div id="MovieDiv">
+                                <div>
                                     <div><img src="@Url.Content(item.PosterFilePath)" class="img-thumbnail" /></div>
                                     <div>@item.Name (@item.YearOfRelease)</div>
                                 </div>
