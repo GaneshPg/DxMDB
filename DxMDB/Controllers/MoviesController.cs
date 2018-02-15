@@ -7,17 +7,13 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using DxMDB.DAL;
-using DxMDB.Repository;
+using DxMDB.Models;
 
 namespace DxMDB.Controllers
 {
     public class MoviesController : Controller
     {
         private MovieDBContext db = new MovieDBContext();
-        private MoviesRepository moviesRepository = new MoviesRepository();
-        private ActorsRepository actorsRepository = new ActorsRepository();
-        private ProducersRepository producersRepository = new ProducersRepository();
 
         // GET: Movies
         public ActionResult Index(int? id)
@@ -28,11 +24,9 @@ namespace DxMDB.Controllers
             int entriesPerPage = viewModel.NumberOfRows * viewModel.NumberOfColumns;
             int skip = (index - 1) * entriesPerPage;
 
-            viewModel.Movies = moviesRepository.GetMovies().OrderBy(movie => movie.Name).Skip(skip).Take(entriesPerPage).ToList();
+            viewModel.Movies = db.Movies.Include(movie => movie.Producer).OrderBy(movie => movie.Name).Skip(skip).Take(entriesPerPage).ToList();
             viewModel.PageNumber = index;
-            viewModel.NumberOfPages = (int)Math.Ceiling((float)moviesRepository.GetMovieCount() / entriesPerPage);
-            if (viewModel.NumberOfPages == 0)
-                viewModel.NumberOfPages = 1;
+            viewModel.NumberOfPages = (int)Math.Ceiling((float)db.Movies.Count() / entriesPerPage);
             return View(viewModel);
         }
 
@@ -43,7 +37,7 @@ namespace DxMDB.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Movie movie = moviesRepository.GetMovieById(id ?? 1);
+            Movie movie = db.Movies.Find(id);
             if (movie == null)
             {
                 return HttpNotFound();
@@ -52,11 +46,35 @@ namespace DxMDB.Controllers
             return View(movie);
         }
 
+        public void AddNewMovieActor(Movie movie, int actorId)
+        {
+            db.Movies.Add(movie);
+            Actor actor = new Actor { Id = actorId };
+            db.Actors.Attach(actor);
+            movie.Actors.Add(actor);
+            db.SaveChanges();
+        }
+
+        public void AddMovieActor(int movieId, int actorId)
+        {
+            Movie movie = db.Movies.Find(movieId);
+            Actor actor = db.Actors.Find(actorId);
+            db.Actors.Attach(actor);
+            movie.Actors.Add(actor);
+            db.SaveChanges();
+        }
+
+        public void DeleteAllMovieActors(int movieId)
+        {
+            Movie movie = db.Movies.Find(movieId);
+            movie.Actors.Clear();
+        }
+
         // GET: Movies/Create
         public ActionResult Create()
         {
-            ViewBag.Producers = producersRepository.GetProducers();
-            ViewBag.Actors = actorsRepository.GetActors();
+            ViewBag.Producers = db.Producers;
+            ViewBag.Actors = db.Actors;
             return View();
         }
 
@@ -81,7 +99,16 @@ namespace DxMDB.Controllers
             else
                 actorsIdString = null;
             if (ModelState.IsValid)
-            {  
+            {
+                foreach (int currentId in selectedActorsList)
+                {
+                    if (currentId == selectedActorsList.ElementAt(0))
+                        AddNewMovieActor(movie, currentId);
+                    else
+                    {
+                        AddMovieActor(movie.Id, currentId);
+                    }
+                }
                 foreach (string file in Request.Files)
                 {
                     var postedFile = Request.Files[file];
@@ -95,7 +122,7 @@ namespace DxMDB.Controllers
                         movie.PosterFilePath = "~/Images/no-image.png";
                     }
                 }
-                moviesRepository.AddMovie(movie, selectedActorsList);
+                db.SaveChanges();
                 TempData["Notification"] = movie.Name + " has been added succesfully to the movies database!";
                 return RedirectToAction("Index");
             }
@@ -114,7 +141,7 @@ namespace DxMDB.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Movie movie = moviesRepository.GetMovieById(id ?? 1);
+            Movie movie = db.Movies.Find(id);
             if (movie == null)
             {
                 return HttpNotFound();
@@ -146,8 +173,9 @@ namespace DxMDB.Controllers
             }
             if (ModelState.IsValid)
             {
-                Movie movieFromDB = moviesRepository.GetMovieById(movie.Id);
+                Movie movieFromDB = db.Movies.Find(movie.Id);
                 movieFromDB.ProducerId = int.Parse(Request["producer"]);
+                movieFromDB.Actors.Clear();
                 movieFromDB.Name = movie.Name;
                 movieFromDB.Plot = movie.Plot;
                 movieFromDB.Producer = movie.Producer;
@@ -169,14 +197,20 @@ namespace DxMDB.Controllers
                         movieFromDB.PosterFilePath = "~/Images/" + movieFromDB.Id.ToString() + Path.GetFileName(postedFile.FileName);
                     }
                 }
-                moviesRepository.UpdateMovie(movie, selectedActorsList);
+                foreach (int actorId in selectedActorsList)
+                {
+                    Actor actor = db.Actors.Find(actorId);
+                    movieFromDB.Actors.Add(actor);
+                }
+                db.Entry(movieFromDB).State = EntityState.Modified;
+                db.SaveChanges();
                 TempData["Notification"] = movie.Name + " has been edited succesfully!";
                 return RedirectToAction("Index");
             }
             ViewBag.ProducerSelected = movie.ProducerId;
             ViewBag.ActorsSelected = selectedActorsList;
-            ViewBag.Producers = producersRepository.GetProducers();
-            ViewBag.Actors = actorsRepository.GetActors();
+            ViewBag.Producers = db.Producers.ToList();
+            ViewBag.Actors = db.Actors.ToList();
             return View(movie);
         }
 
@@ -187,7 +221,7 @@ namespace DxMDB.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Movie movie = moviesRepository.GetMovieById(id ?? 1);
+            Movie movie = db.Movies.Find(id);
             if (movie == null)
             {
                 return HttpNotFound();
@@ -200,7 +234,7 @@ namespace DxMDB.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Movie movie = moviesRepository.GetMovieById(id);
+            Movie movie = db.Movies.Find(id);
             if (!string.IsNullOrEmpty(movie.PosterFilePath) && movie.PosterFilePath != "~/Images/no-image.png")
             {
                 string fullPath = Request.MapPath(movie.PosterFilePath);
@@ -209,7 +243,8 @@ namespace DxMDB.Controllers
                     System.IO.File.Delete(fullPath);
                 }
             }
-            moviesRepository.DeleteMovie(id);
+            db.Movies.Remove(movie);
+            db.SaveChanges();
             TempData["Notification"] = movie.Name + " has been deleted from the movies database!";
             return RedirectToAction("Index");
         }
@@ -218,7 +253,7 @@ namespace DxMDB.Controllers
         {
             if (disposing)
             {
-                moviesRepository.Dispose();
+                db.Dispose();
             }
             base.Dispose(disposing);
         }

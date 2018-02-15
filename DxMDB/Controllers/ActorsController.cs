@@ -7,20 +7,19 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using DxMDB.DAL;
-using DxMDB.Repository;
+using DxMDB.Models;
 using Newtonsoft.Json.Linq;
 
 namespace DxMDB.Controllers
 {
     public class ActorsController : Controller
     {
-        private ActorsRepository repository = new ActorsRepository();
+        private MovieDBContext db = new MovieDBContext();
 
         // GET: Actors
         public ActionResult Index()
         {
-            return View(repository.GetActors());
+            return View(db.Actors.ToList());
         }
 
         // GET: Actors/Details/5
@@ -30,7 +29,7 @@ namespace DxMDB.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Actor actor = repository.GetActorById(id ?? 0);
+            Actor actor = db.Actors.Find(id);
             if (actor == null)
             {
                 return HttpNotFound();
@@ -56,7 +55,8 @@ namespace DxMDB.Controllers
                 actor = new Actor { Name = Name, Gender = Gender, Bio = Bio };
             }
 
-            repository.AddActor(actor);
+            db.Actors.Add(actor);
+            db.SaveChanges();
 
             JObject jObject = JObject.FromObject(actor);
 
@@ -79,7 +79,8 @@ namespace DxMDB.Controllers
         {
             if (ModelState.IsValid)
             {
-                repository.AddActor(actor);
+                db.Actors.Add(actor);
+                db.SaveChanges();
                 TempData["Notification"] = actor.Name + " has been added succesfully to the actors database!";
                 return RedirectToAction("Index");
             }
@@ -94,7 +95,7 @@ namespace DxMDB.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Actor actor = repository.GetActorById(id ?? 0);
+            Actor actor = db.Actors.Find(id);
             if (actor == null)
             {
                 return HttpNotFound();
@@ -111,7 +112,8 @@ namespace DxMDB.Controllers
         {
             if (ModelState.IsValid)
             {
-                repository.UpdateActor(actor);
+                db.Entry(actor).State = EntityState.Modified;
+                db.SaveChanges();
                 TempData["Notification"] = actor.Name + " has been edited succesfully!";
                 return RedirectToAction("Index");
             }
@@ -125,7 +127,7 @@ namespace DxMDB.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Actor actor = repository.GetActorById(id ?? 0);
+            Actor actor = db.Actors.Find(id);
             if (actor == null)
             {
                 return HttpNotFound();
@@ -138,8 +140,9 @@ namespace DxMDB.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Actor actor = repository.GetActorById(id);
-            repository.DeleteActor(id);
+            Actor actor = db.Actors.Find(id);
+            db.Actors.Remove(actor);
+            db.SaveChanges();
             TempData["Notification"] = actor.Name + " has been deleted from the actors database!";
             return RedirectToAction("Index");
         }
@@ -148,7 +151,7 @@ namespace DxMDB.Controllers
         {
             if (disposing)
             {
-                repository.Dispose();
+                db.Dispose();
             }
             base.Dispose(disposing);
         }

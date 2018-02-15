@@ -6,7 +6,6 @@ namespace DxMDB.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity;
     using System.Linq;
-    using DxMDB.Models;
 
     public class MovieDBContext : DbContext
     {

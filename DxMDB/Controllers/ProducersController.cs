@@ -7,20 +7,19 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using DxMDB.DAL;
-using DxMDB.Repository;
+using DxMDB.Models;
 using Newtonsoft.Json.Linq;
 
 namespace DxMDB.Controllers
 {
     public class ProducersController : Controller
     {
-        private ProducersRepository repository = new ProducersRepository();
+        private MovieDBContext db = new MovieDBContext();
 
         // GET: Producers
         public ActionResult Index()
         {
-            return View(repository.GetProducers());
+            return View(db.Producers.ToList());
         }
 
         // GET: Producers/Details/5
@@ -30,7 +29,7 @@ namespace DxMDB.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Producer producer = repository.GetProducerById(id ?? 1);
+            Producer producer = db.Producers.Find(id);
             if (producer == null)
             {
                 return HttpNotFound();
@@ -54,9 +53,10 @@ namespace DxMDB.Controllers
             catch (Exception e)
             {
                 producer = new Producer { Name = Name, Gender = Gender, Bio = Bio };
-            }
+            }           
 
-            repository.AddProducer(producer);
+            db.Producers.Add(producer);
+            db.SaveChanges();
 
             JObject jObject = JObject.FromObject(producer);
 
@@ -78,7 +78,8 @@ namespace DxMDB.Controllers
         {
             if (ModelState.IsValid)
             {
-                repository.AddProducer(producer);
+                db.Producers.Add(producer);
+                db.SaveChanges();
                 TempData["Notification"] = producer.Name + " has been added succesfully to the producers database!";
                 return RedirectToAction("Index");
             }
@@ -93,7 +94,7 @@ namespace DxMDB.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Producer producer = repository.GetProducerById(id ?? 1);
+            Producer producer = db.Producers.Find(id);
             if (producer == null)
             {
                 return HttpNotFound();
@@ -110,7 +111,8 @@ namespace DxMDB.Controllers
         {
             if (ModelState.IsValid)
             {
-                repository.UpdateProducer(producer);
+                db.Entry(producer).State = EntityState.Modified;
+                db.SaveChanges();
                 TempData["Notification"] = producer.Name + " has been edited succesfully!";
                 return RedirectToAction("Index");
             }
@@ -124,7 +126,7 @@ namespace DxMDB.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Producer producer = repository.GetProducerById(id ?? 1);
+            Producer producer = db.Producers.Find(id);
             if (producer == null)
             {
                 return HttpNotFound();
@@ -137,8 +139,9 @@ namespace DxMDB.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Producer producer = repository.GetProducerById(id);
-            repository.DeleteProducer(id);
+            Producer producer = db.Producers.Find(id);
+            db.Producers.Remove(producer);
+            db.SaveChanges();
             TempData["Notification"] = producer.Name + " has been deleted from the producers database!";
             return RedirectToAction("Index");
         }
@@ -147,7 +150,7 @@ namespace DxMDB.Controllers
         {
             if (disposing)
             {
-                repository.Dispose();
+                db.Dispose();
             }
             base.Dispose(disposing);
         }
