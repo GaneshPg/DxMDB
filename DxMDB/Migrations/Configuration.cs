@@ -5,14 +5,14 @@ namespace DxMDB.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<DxMDB.Models.MovieDBContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<DxMDB.DAL.MovieDBContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(DxMDB.Models.MovieDBContext context)
+        protected override void Seed(DxMDB.DAL.MovieDBContext context)
         {
             //  This method will be called after migrating to the latest version.
 

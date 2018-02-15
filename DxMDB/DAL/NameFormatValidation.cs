@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace DxMDB.Models
+namespace DxMDB.DAL
 {
     public class NameFormatValidation : ValidationAttribute
     {

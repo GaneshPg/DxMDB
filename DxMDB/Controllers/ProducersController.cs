@@ -7,29 +7,30 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using DxMDB.Models;
+using DxMDB.Repository;
+using DxMDB.DAL;
 using Newtonsoft.Json.Linq;
 
 namespace DxMDB.Controllers
 {
     public class ProducersController : Controller
     {
-        private MovieDBContext db = new MovieDBContext();
+        private ProducersRepository producersRepository = new ProducersRepository();
 
-        // GET: Producers
+        // GET: Actors
         public ActionResult Index()
         {
-            return View(db.Producers.ToList());
+            return View(producersRepository.GetAllProducers());
         }
 
-        // GET: Producers/Details/5
+        // GET: Actors/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Producer producer = db.Producers.Find(id);
+            Producer producer = producersRepository.GetProducerById(id ?? 1);
             if (producer == null)
             {
                 return HttpNotFound();
@@ -53,23 +54,24 @@ namespace DxMDB.Controllers
             catch (Exception e)
             {
                 producer = new Producer { Name = Name, Gender = Gender, Bio = Bio };
-            }           
+            }
 
-            db.Producers.Add(producer);
-            db.SaveChanges();
+            producersRepository.AddProducer(producer);
 
             JObject jObject = JObject.FromObject(producer);
+            System.Diagnostics.Debug.WriteLine("Producer id : " + producer.Id.ToString());
 
             return Content(jObject.ToString(), "application/json");
+
         }
 
-        // GET: Producers/Create
+        // GET: Actors/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Producers/Create
+        // POST: Actors/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -78,23 +80,22 @@ namespace DxMDB.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Producers.Add(producer);
-                db.SaveChanges();
-                TempData["Notification"] = producer.Name + " has been added succesfully to the producers database!";
+                producersRepository.AddProducer(producer);
+                TempData["Notification"] = producer.Name + " has been added succesfully to the actors database!";
                 return RedirectToAction("Index");
             }
 
             return View(producer);
         }
 
-        // GET: Producers/Edit/5
+        // GET: Actors/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Producer producer = db.Producers.Find(id);
+            Producer producer = producersRepository.GetProducerById(id ?? 1);
             if (producer == null)
             {
                 return HttpNotFound();
@@ -102,7 +103,7 @@ namespace DxMDB.Controllers
             return View(producer);
         }
 
-        // POST: Producers/Edit/5
+        // POST: Actors/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -111,22 +112,17 @@ namespace DxMDB.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(producer).State = EntityState.Modified;
-                db.SaveChanges();
+                producersRepository.UpdateProducer(producer);
                 TempData["Notification"] = producer.Name + " has been edited succesfully!";
                 return RedirectToAction("Index");
             }
             return View(producer);
         }
 
-        // GET: Producers/Delete/5
-        public ActionResult Delete(int? id)
+        // GET: Actors/Delete/5
+        public ActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Producer producer = db.Producers.Find(id);
+            Producer producer = producersRepository.GetProducerById(id);
             if (producer == null)
             {
                 return HttpNotFound();
@@ -134,15 +130,14 @@ namespace DxMDB.Controllers
             return View(producer);
         }
 
-        // POST: Producers/Delete/5
+        // POST: Actors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Producer producer = db.Producers.Find(id);
-            db.Producers.Remove(producer);
-            db.SaveChanges();
-            TempData["Notification"] = producer.Name + " has been deleted from the producers database!";
+            Producer producer = producersRepository.GetProducerById(id);
+            producersRepository.DeleteProducer(id);
+            TempData["Notification"] = producer.Name + " has been deleted from the actors database!";
             return RedirectToAction("Index");
         }
 
@@ -150,7 +145,7 @@ namespace DxMDB.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                producersRepository.Dispose();
             }
             base.Dispose(disposing);
         }

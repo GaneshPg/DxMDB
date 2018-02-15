@@ -1,4 +1,4 @@
-namespace DxMDB.Models
+namespace DxMDB.DAL
 {
     using System;
     using System.Collections.Generic;

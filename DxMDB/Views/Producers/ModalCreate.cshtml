@@ -1,5 +1,5 @@
-﻿@model DxMDB.Models.Producer
-
+﻿@using DxMDB.DAL;
+@model Producer
 @{
     Layout = null;
 }
@@ -28,7 +28,7 @@
                 <div class="col-md-10">
                     Male @Html.RadioButtonFor(m => m.Gender, "Male")
                     Female @Html.RadioButtonFor(m => m.Gender, "Female")
-                    @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger", id = "genderval"})
                 </div>
             </div>
 
@@ -59,7 +59,7 @@
 
 <script>
     $('#AddProducer').on('click', function () {
-        var name = $('#name').val(), gender = $('#gender').val(), dateOfBirth = $('#dateofbirth').val(), bio = $('#bio').val();
+        var name = $('#name').val(), gender = $('input[name=Gender]:checked').val(), dateOfBirth = $('#dateofbirth').val(), bio = $('#bio').val();
         var valid = true;
         if (name == undefined || name == null || name == "") {
             valid = false;

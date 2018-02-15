@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace DxMDB.Models
+namespace DxMDB.DAL
 {
     public class Movie
     {

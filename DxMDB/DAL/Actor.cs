@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace DxMDB.Models
+namespace DxMDB.DAL
 {
     public class Actor
     {
@@ -20,6 +20,7 @@ namespace DxMDB.Models
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MMM/yyyy}")]
         [Display(Name = "Date of Birth")]
+        [Required]
         public DateTime DateOfBirth { get; set; }
 
         [DataType(DataType.MultilineText)]
