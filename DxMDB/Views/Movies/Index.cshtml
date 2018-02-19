@@ -11,26 +11,7 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
-    <style type="text/css">
-        .img-thumbnail {
-            height: 250px;
-            overflow: auto;
-            margin-bottom: 10px;
-            margin-top: 20px;
-        }
-
-        .wrapper {
-            text-align: center;
-        }
-
-        .inner-block {
-            display: inline-block;
-        }
-        .image-divlink:hover {
-            background-color: #b1b1b1;
-            border-radius: 25px;
-        }
-    </style>
+    <link href="~/Content/Index.css" rel="stylesheet" />
 </head>
 <body>
     @if (TempData["Notification"] != null)
@@ -63,8 +44,13 @@
         @Html.ActionLink("Create New", "Create")
     </p>
 
-    <div class="search-box">
-        <input type="text" id="searchKey" placeholder="Search by movie name" /> 
+    <div class="wrapper">
+        <div class="inner-block">
+            <input type="text" id="searchKey" placeholder="Search by movie name" />
+            <span class="input-group-btn">
+                <button class="btn btn-search" type="button" id="searchbtn"><i class="fa fa-search fa-fw"></i> Search</button>
+            </span>
+        </div>
     </div>
 
     <div class="container">
@@ -130,7 +116,11 @@
         });
     }
 
-    $('#searchKey').on('input', function () {
+    $('#searchKey').on('change', function () {
+        $('#searchbtn').click();
+    });
+
+    $('#searchbtn').on('click', function () {
         var key = $('#searchKey').val();
         $.ajax({
             url: "/Movies/Index?key=" + key,

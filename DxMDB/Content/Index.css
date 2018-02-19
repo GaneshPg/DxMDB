@@ -1,0 +1,44 @@
+﻿.img-thumbnail {
+    height: 250px;
+    overflow: auto;
+    margin-bottom: 10px;
+    margin-top: 30px;
+}
+
+.wrapper {
+    text-align: center;
+}
+
+.inner-block {
+    display: inline-block;
+}
+
+.image-divlink:hover {
+    background-color: #b1b1b1;
+    border-radius: 0;
+    width : auto;
+    height : auto;
+}
+
+btn-search {
+    background: #424242;
+    border-radius: 0;
+    color: #fff;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #1c1c1c;
+}
+
+.btn-search:link, .btn-search:visited {
+    color: #fff;
+}
+
+.btn-search:active, .btn-search:hover {
+    background: #1c1c1c;
+    color: #fff;
+}
+
+.search-box{
+    margin-left : auto;
+    margin-right : auto;
+}

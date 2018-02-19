@@ -27,13 +27,21 @@ namespace DxMDB.Controllers
             var viewModel = new MoviesIndexViewModel();
             int entriesPerPage = viewModel.NumberOfRows * viewModel.NumberOfColumns;
             int skip = (index - 1) * entriesPerPage;
+            int count;
 
             if (string.IsNullOrEmpty(key))
+            {
                 viewModel.Movies = moviesRepository.GetAllMovies().OrderBy(movie => movie.Name).Skip(skip).Take(entriesPerPage).ToList();
+                count = moviesRepository.GetCount();
+            }
             else
-                viewModel.Movies = moviesRepository.GetAllMovies().Where(movie => movie.Name.ToUpper().Contains(key.ToUpper())).OrderBy(movie => movie.Name).Skip(skip).Take(entriesPerPage).ToList();
+            {
+                IEnumerable<Movie> selectedMoviesList = moviesRepository.GetAllMovies().Where(movie => movie.Name.ToUpper().Contains(key.ToUpper()));
+                count = selectedMoviesList.Count();
+                viewModel.Movies = selectedMoviesList.OrderBy(movie => movie.Name).Skip(skip).Take(entriesPerPage).ToList();
+            }
             viewModel.PageNumber = index;
-            viewModel.NumberOfPages = (int)Math.Ceiling((float)viewModel.Movies.Count() / entriesPerPage);
+            viewModel.NumberOfPages = (int)Math.Ceiling((float)count / entriesPerPage);
             if (viewModel.NumberOfPages == 0)
                 viewModel.NumberOfPages = 1;
             viewModel.key = key;

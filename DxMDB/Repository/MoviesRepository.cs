@@ -21,6 +21,11 @@ namespace DxMDB.Repository
             return context.Movies.Find(id);
         }
 
+        public int GetCount()
+        {
+            return context.Movies.Count();
+        }
+
         public void SetActors(Movie movie, List<int> selectedActorsList)
         {
             movie.Actors.Clear();
